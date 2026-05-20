@@ -601,6 +601,290 @@
     footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
     footer a:hover { color: #fff; }
 
+    /* ── SERVICIOS ── */
+    .services-banner {
+      background: linear-gradient(135deg, #003d99 0%, #0052cc 55%, #0284c7 100%);
+      border-radius: var(--radius);
+      padding: 2.4rem 2.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      box-shadow: var(--shadow-lg);
+    }
+    .services-banner-text .srv-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 0.4rem;
+    }
+    .services-banner-text h3 {
+      font-size: clamp(1.35rem, 2.5vw, 1.7rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.55rem;
+      letter-spacing: -0.3px;
+    }
+    .services-banner-text p {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.93rem;
+      max-width: 500px;
+      line-height: 1.65;
+    }
+    .services-banner-ctas {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    .btn-srv-wa {
+      background: #25d366;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+    }
+    .btn-srv-wa:hover { background: #1ebe5c; transform: translateY(-2px); }
+    .btn-srv-email {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      backdrop-filter: blur(4px);
+    }
+    .btn-srv-email:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+    .services-offer-wrap {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .services-offer-wrap h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .services-offer-wrap p {
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+      font-size: 0.93rem;
+      line-height: 1.7;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+      gap: 1.4rem;
+      margin-bottom: 2.4rem;
+    }
+    .service-card {
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      padding: 1.7rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .service-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+      border-color: rgba(0,82,204,0.35);
+    }
+    .service-card-icon {
+      width: 50px; height: 50px;
+      background: linear-gradient(135deg, rgba(0,82,204,0.1), rgba(0,180,216,0.12));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+    .service-card h4 {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.45rem;
+      line-height: 1.3;
+    }
+    .service-card .srv-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 0.9rem;
+    }
+    .service-card ul {
+      list-style: none;
+      padding: 0; margin: 0;
+    }
+    .service-card ul li {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding: 0.28rem 0 0.28rem 1.2rem;
+      position: relative;
+      line-height: 1.5;
+      border-top: 1px solid var(--border);
+    }
+    .service-card ul li:last-child { border-bottom: 1px solid var(--border); }
+    .service-card ul li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1rem;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .services-bottom-cta {
+      background: linear-gradient(135deg, rgba(0,52,153,0.05) 0%, rgba(0,180,216,0.07) 100%);
+      border: 1px solid rgba(0,82,204,0.15);
+      border-radius: var(--radius);
+      padding: 2.2rem 2rem;
+      text-align: center;
+    }
+    .services-bottom-cta p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      line-height: 1.7;
+    }
+    .services-bottom-cta .btn-primary {
+      background: var(--primary);
+      box-shadow: 0 4px 15px rgba(0,82,204,0.3);
+    }
+    .services-bottom-cta .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ── IA COPILOTO ── */
+    .ai-section {
+      background: linear-gradient(135deg, #060d1f 0%, #0a1a3a 50%, #0c2255 100%);
+      border-radius: var(--radius);
+      padding: 2.8rem 2.4rem;
+      margin-bottom: 2.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .ai-section::before {
+      content: '';
+      position: absolute;
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
+      top: -120px; right: -80px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .ai-section::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,82,204,0.18) 0%, transparent 70%);
+      bottom: -80px; left: -60px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .ai-header {
+      text-align: center;
+      margin-bottom: 2.4rem;
+      position: relative;
+      z-index: 1;
+    }
+    .ai-badge {
+      display: inline-block;
+      background: linear-gradient(90deg, rgba(0,180,216,0.25), rgba(0,82,204,0.25));
+      border: 1px solid rgba(0,180,216,0.4);
+      color: #7dd3fc;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      margin-bottom: 0.9rem;
+    }
+    .ai-header h3 {
+      font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.3px;
+    }
+    .ai-header p {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.92rem;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .ai-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 1.1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .ai-feature {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.3rem 1.4rem;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      backdrop-filter: blur(4px);
+    }
+    .ai-feature:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(0,180,216,0.4);
+      transform: translateY(-3px);
+    }
+    .ai-feature-top {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.5rem;
+    }
+    .ai-feature-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .ai-feature h5 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #e0f2fe;
+      margin: 0;
+    }
+    .ai-feature p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .ai-tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .ai-tool-pill {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.8);
+      padding: 0.3rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
     /* ── BACK TO TOP ── */
     #backToTop {
       position: fixed;
@@ -663,6 +947,7 @@
     <a href="#sobre-mi">Sobre mí</a>
     <a href="#habilidades-section">Habilidades</a>
     <a href="#portafolio">Portafolio</a>
+    <a href="#servicios">Servicios</a>
     <a href="#galeria">Galería</a>
     <a href="#contacto">Contacto</a>
     <input type="text" id="buscador" class="nav-search" placeholder="🔍 Buscar...">
@@ -888,6 +1173,174 @@
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-header fade-up">
+    <h2>Servicios</h2>
+    <div class="section-line"></div>
+    <p>Capacitación y consultoría en datos para empresas e instituciones</p>
+  </div>
+
+  <!-- Banner principal -->
+  <div class="services-banner fade-up">
+    <div class="services-banner-text">
+      <div class="srv-eyebrow">🏢 Formación corporativa</div>
+      <h3>Capacitación Empresarial</h3>
+      <p>Soluciones de formación a medida para organizaciones. Programas personalizados de análisis de datos e inteligencia de negocios para equipos que quieren tomar mejores decisiones.</p>
+    </div>
+    <div class="services-banner-ctas">
+      <a href="https://wa.me/595981996774?text=Hola%2C%20me%20gustar%C3%ADa%20consultar%20un%20presupuesto%20de%20capacitaci%C3%B3n%20empresarial" target="_blank" class="btn btn-srv-wa"><i class="fab fa-whatsapp"></i> Consultar presupuesto</a>
+      <a href="mailto:ogf.data@outlook.com?subject=Consulta%20capacitaci%C3%B3n%20empresarial" class="btn btn-srv-email"><i class="fas fa-envelope"></i> Enviar email</a>
+    </div>
+  </div>
+
+  <!-- ¿Qué ofrecemos? -->
+  <div class="services-offer-wrap fade-up">
+    <h3>¿Qué ofrecemos?</h3>
+    <p>Capacitamos equipos con herramientas reales y metodología orientada a resultados medibles desde el primer día.</p>
+  </div>
+
+  <!-- Cards de servicios -->
+  <div class="services-grid">
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">📊</div>
+      <h4>Power BI &amp; Dashboards Empresariales</h4>
+      <p class="srv-desc">Formación en Power BI enfocada en el negocio de tu empresa: modelado de datos, DAX e informes ejecutivos con tus propios datos.</p>
+      <ul>
+        <li>Dashboards de ventas, finanzas, operaciones y RRHH</li>
+        <li>Integración con bases de datos corporativas</li>
+        <li>Automatización de reportes periódicos</li>
+      </ul>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">📗</div>
+      <h4>Excel Avanzado &amp; Automatización</h4>
+      <p class="srv-desc">Power Query, Power Pivot, macros y fórmulas avanzadas para eliminar tareas manuales y mejorar la productividad del equipo.</p>
+      <ul>
+        <li>Automatización de informes y consolidación de datos</li>
+        <li>Modelos de datos con Power Pivot + DAX en Excel</li>
+        <li>Reportes dinámicos con tablas pivot avanzadas</li>
+      </ul>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">🗄️</div>
+      <h4>SQL para Equipos de Análisis</h4>
+      <p class="srv-desc">Enseñamos a tu equipo a extraer, filtrar y analizar datos directamente desde bases de datos relacionales usando MySQL.</p>
+      <ul>
+        <li>Consultas SELECT, JOINs, GROUP BY y subconsultas</li>
+        <li>Análisis de datos transaccionales y operativos</li>
+        <li>Integración SQL → Power BI para reportes directos</li>
+      </ul>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">🤝</div>
+      <h4>Modalidad In-Company &amp; Online</h4>
+      <p class="srv-desc">Flexibilidad total: dictamos las capacitaciones en las instalaciones de tu empresa o de forma online sincrónica vía Zoom.</p>
+      <ul>
+        <li>Modalidad 100% online, híbrida o presencial (in-company)</li>
+        <li>Horarios adaptados a la operativa de tu empresa</li>
+        <li>Material y datasets de tu propia industria</li>
+      </ul>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">🐍</div>
+      <h4>Python para Análisis de Datos</h4>
+      <p class="srv-desc">Desde cero hasta nivel avanzado: análisis, visualización y automatización con Python aplicado a los datos de tu organización.</p>
+      <ul>
+        <li>pandas, numpy y matplotlib / plotly para análisis real</li>
+        <li>Automatización de reportes y limpieza de datos</li>
+        <li>Integración con Excel, SQL y Power BI</li>
+      </ul>
+    </div>
+
+    <div class="service-card fade-up">
+      <div class="service-card-icon">📈</div>
+      <h4>R &amp; Estadística Aplicada</h4>
+      <p class="srv-desc">Análisis estadístico profesional con R: desde exploración de datos hasta modelos inferenciales y visualizaciones publicables.</p>
+      <ul>
+        <li>Estadística descriptiva e inferencial aplicada</li>
+        <li>Visualización con ggplot2 y reportes con R Markdown</li>
+        <li>Validación de instrumentos: Cronbach, KR-20, Split-Half</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- IA Copiloto -->
+  <div class="ai-section fade-up">
+    <div class="ai-header">
+      <div class="ai-badge">✨ Incluido en todos los cursos</div>
+      <h3>🤖 IA como Copiloto en cada curso</h3>
+      <p>Integramos inteligencia artificial como asistente activo en todas las capacitaciones. No solo aprendés la herramienta: aprendés a trabajar con IA para ser más rápido, cometer menos errores y producir más valor desde el primer día.</p>
+    </div>
+
+    <div class="ai-features-grid">
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">🚀</span>
+          <h5>Aprendizaje acelerado</h5>
+        </div>
+        <p>La IA genera ejemplos de código al instante, adapta explicaciones a tu nivel y acelera la curva de aprendizaje de cada herramienta.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">🔍</span>
+          <h5>Depuración inteligente</h5>
+        </div>
+        <p>Detecta errores en código SQL, Python, R o DAX y propone correcciones con explicación del porqué, en tiempo real durante los ejercicios.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">💡</span>
+          <h5>Consultor permanente</h5>
+        </div>
+        <p>El equipo puede consultar dudas técnicas a la IA en cualquier momento, incluso después del curso, extendiendo el aprendizaje sin límites.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">⚡</span>
+          <h5>Productividad x3</h5>
+        </div>
+        <p>Automatizá consultas SQL repetitivas, generá medidas DAX, escribí scripts Python y creá visualizaciones con asistencia IA continua.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">🎯</span>
+          <h5>Aplicación inmediata</h5>
+        </div>
+        <p>Usamos los datos reales de tu empresa como caso de estudio: la IA ayuda a adaptar cada ejercicio al contexto específico del equipo.</p>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-top">
+          <span class="ai-feature-icon">📝</span>
+          <h5>Documentación automática</h5>
+        </div>
+        <p>Generá documentación de dashboards, scripts y modelos de datos con IA, asegurando que el conocimiento quede en la organización.</p>
+      </div>
+    </div>
+
+    <div class="ai-tools-row">
+      <span class="ai-tool-pill">ChatGPT</span>
+      <span class="ai-tool-pill">GitHub Copilot</span>
+      <span class="ai-tool-pill">Claude (Anthropic)</span>
+      <span class="ai-tool-pill">Copilot en Power BI</span>
+      <span class="ai-tool-pill">Gemini en Google Sheets</span>
+      <span class="ai-tool-pill">AI en Excel (Microsoft 365)</span>
+    </div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="services-bottom-cta fade-up">
+    <p>¿Tu empresa necesita capacitación en datos? Contame los objetivos de tu equipo y diseñamos una propuesta a medida.</p>
+    <a href="https://wa.me/595981996774?text=Hola%2C%20me%20gustar%C3%ADa%20solicitar%20una%20propuesta%20personalizada%20de%20capacitaci%C3%B3n" target="_blank" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Solicitá tu propuesta personalizada</a>
   </div>
 </section>
 
