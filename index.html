@@ -3,350 +3,1078 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oscar González Frutos - Consultor en Estadística</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Oscar González Frutos – Consultor en Análisis de Datos</title>
+  <meta name="description" content="Consultor y docente en análisis de datos. Especialista en Power BI, SQL, Excel, R y Python. Más de 10 años de experiencia.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-0aG4VVzzyX4YZf8TSwC7LNe0ZgyPVFd5TAY8nSHxi2D9yAHcglpdxpEzSm1nmwY6uNAbKp/jR08YJvU5r9jKpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --primary: #0052cc;
+      --primary-dark: #003d99;
+      --accent: #00b4d8;
+      --bg: #f4f6fb;
+      --bg-white: #ffffff;
+      --text: #1a1a2e;
+      --text-muted: #5c6680;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 32px rgba(0,82,204,0.15);
+      --radius: 14px;
+      --transition: 0.25s ease;
     }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
     }
 
-    header {
-      background: #222;
-      color: #fff;
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-
-    .foto-perfil {
-      width: 180px;
-      height: auto;
-      max-height: 240px;
-      object-fit: cover;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      margin-bottom: 1.5rem;
-      border: 3px solid #fff;
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-    }
-
-    header p {
-      font-size: 1.2rem;
-    }
-
+    /* ── NAV ── */
     nav {
-      background: #fff;
-      padding: 1rem;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: box-shadow var(--transition);
     }
-
-    nav a {
-      margin: 0 1rem;
-      color: #333;
+    nav.scrolled { box-shadow: var(--shadow-md); }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary);
       text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      transition: color var(--transition);
+      position: relative;
+      padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 2px;
+      background: var(--primary);
+      transition: width var(--transition);
+      border-radius: 2px;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-search {
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.88rem;
+      outline: none;
+      background: var(--bg);
+      width: 160px;
+      transition: border-color var(--transition), width var(--transition);
+    }
+    .nav-search:focus { border-color: var(--primary); width: 200px; }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a1628 0%, #0d2060 50%, #0052cc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(0,180,216,0.12) 0%, transparent 70%);
+      top: -200px; right: -200px;
+      border-radius: 50%;
+    }
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,82,204,0.2) 0%, transparent 70%);
+      bottom: -150px; left: -100px;
+      border-radius: 50%;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero-avatar {
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(255,255,255,0.3);
+      box-shadow: 0 0 0 8px rgba(255,255,255,0.08), 0 16px 40px rgba(0,0,0,0.4);
+      margin-bottom: 1.8rem;
+      transition: transform 0.4s ease;
+    }
+    .hero-avatar:hover { transform: scale(1.04); }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0,180,216,0.2);
+      border: 1px solid rgba(0,180,216,0.4);
+      color: #7dd3fc;
+      font-size: 0.8rem;
       font-weight: 600;
-    }
-    
-
-    section {
-      padding: 3rem 1rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-
-    .card {
-      background: #fff;
-      padding: 1.5rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
       margin-bottom: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    #hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.5px;
+    }
+    #hero .subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+    .pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all var(--transition);
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0,180,216,0.4);
+    }
+    .btn-primary:hover { background: #0096b7; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,180,216,0.5); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
     }
 
-    .grid {
+    /* ── SECTIONS ── */
+    section { padding: 5rem 1.5rem; max-width: 1080px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      margin-bottom: 0.5rem;
+    }
+    .section-header p { color: var(--text-muted); font-size: 1rem; }
+    .section-line {
+      width: 48px; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      margin: 0.8rem auto 0;
+    }
+
+    /* ── SOBRE MÍ ── */
+    .about-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .card {
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary); }
+    .about-text p { color: var(--text-muted); line-height: 1.8; }
+    .about-text strong { color: var(--text); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border-radius: 12px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-card .lbl { font-size: 0.78rem; opacity: 0.85; font-weight: 500; }
 
-    .galeria-capacitaciones {
+    /* ── HABILIDADES ── */
+    #habilidades { background: var(--bg-white); border-radius: 0; }
+    #habilidades > section { padding: 5rem 1.5rem; }
+    .habilidades-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+    .skills-cats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      margin-top: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
     }
-
-    .galeria-capacitaciones img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    form input, form textarea {
-      width: 100%;
-      padding: 0.75rem;
+    .skill-cat h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
       margin-bottom: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-bottom: 0.9rem;
+    }
+    .skill-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+    .skill-bar {
+      height: 7px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 1s ease;
     }
 
-    form button {
-      background: #333;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    /* ── PORTAFOLIO ── */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
     }
-
-    .social-icons {
-      margin-top: 1rem;
+    .portfolio-card {
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition), transform var(--transition);
+      display: flex;
+      flex-direction: column;
     }
-
-    .social-icons a {
-      color: #333;
-      margin: 0 0.5rem;
-      font-size: 1.5rem;
-      text-decoration: none;
+    .portfolio-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-5px); }
+    .portfolio-img-wrap {
+      position: relative;
+      overflow: hidden;
+      height: 195px;
     }
-
-    .cv-link {
-      display: inline-block;
-      margin-top: 1.5rem;
-      background: #0066cc;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 5px;
-      text-decoration: none;
+    .portfolio-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .portfolio-card:hover .portfolio-img-wrap img { transform: scale(1.05); }
+    .portfolio-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,52,153,0.85) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity var(--transition);
+      display: flex;
+      align-items: flex-end;
+      padding: 1rem;
+    }
+    .portfolio-card:hover .portfolio-overlay { opacity: 1; }
+    .portfolio-overlay span {
+      color: #fff;
+      font-size: 0.85rem;
       font-weight: 600;
     }
+    .portfolio-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: rgba(0,82,204,0.1);
+      color: var(--primary);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .portfolio-body { padding: 1.2rem 1.4rem 1.4rem; flex: 1; display: flex; flex-direction: column; }
+    .portfolio-body h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.35; }
+    .portfolio-body p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+    .portfolio-links { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+    .portfolio-links a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .link-primary { background: var(--primary); color: #fff; }
+    .link-primary:hover { background: var(--primary-dark); }
+    .link-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+    .link-ghost:hover { border-color: var(--primary); color: var(--primary); }
 
+    /* ── GALERÍA ── */
+    .gallery-section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 3rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      cursor: zoom-in;
+      box-shadow: var(--shadow-sm);
+    }
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.07); }
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,52,204,0.3);
+      opacity: 0;
+      transition: opacity var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gallery-item:hover .gallery-item-overlay { opacity: 1; }
+    .gallery-item-overlay i { color: #fff; font-size: 1.5rem; }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 10px;
+      object-fit: contain;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 1.5rem; right: 1.5rem;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity var(--transition);
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-nav {
+      position: fixed;
+      top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 1.4rem;
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background var(--transition);
+      backdrop-filter: blur(6px);
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.22); }
+    .lightbox-prev { left: 1.5rem; }
+    .lightbox-next { right: 1.5rem; }
+
+    /* ── CONTACTO ── */
+    #contacto .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .contact-info h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+    .contact-info p { color: var(--text-muted); margin-bottom: 1.5rem; }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.95rem;
+    }
+    .contact-item i {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,82,204,0.1);
+      color: var(--primary);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .social-row { display: flex; gap: 0.7rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .social-btn.whatsapp { background: #25d366; color: #fff; }
+    .social-btn.whatsapp:hover { background: #1ebe5c; transform: translateY(-2px); }
+    .social-btn.linkedin { background: #0077b5; color: #fff; }
+    .social-btn.linkedin:hover { background: #005e91; transform: translateY(-2px); }
+    .social-btn.facebook { background: #1877f2; color: #fff; }
+    .social-btn.facebook:hover { background: #1269d3; transform: translateY(-2px); }
+    .social-btn.instagram { background: linear-gradient(135deg,#f58529,#dd2a7b,#8134af); color: #fff; }
+    .social-btn.instagram:hover { opacity: 0.9; transform: translateY(-2px); }
+    form input, form textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    form input:focus, form textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,82,204,0.1);
+    }
+    form textarea { resize: vertical; min-height: 130px; }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
     footer {
+      background: #0a1628;
+      color: rgba(255,255,255,0.6);
       text-align: center;
       padding: 2rem 1rem;
-      background: #222;
-      color: white;
+      font-size: 0.88rem;
+    }
+    footer a { color: rgba(255,255,255,0.7); text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    /* ── BACK TO TOP ── */
+    #backToTop {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--primary);
+      color: #fff;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity var(--transition), transform var(--transition);
+      z-index: 999;
+    }
+    #backToTop.show { opacity: 1; transform: translateY(0); }
+    #backToTop:hover { background: var(--primary-dark); }
+
+    /* ── ANIMACIONES ENTRADA ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HABILIDADES WRAP FULL WIDTH ── */
+    #habilidades-section {
+      background: var(--bg-white);
+      padding: 5rem 0;
+    }
+    .section-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: #fff; padding: 1.5rem; gap: 1rem; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-md); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .about-grid, #contacto .contact-grid { grid-template-columns: 1fr; }
+      .hero-avatar { width: 120px; height: 120px; }
+      .lightbox-nav { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <img src="images/oscar.jpg" alt="Foto profesional de Oscar González Frutos" class="foto-perfil" />
-    <h1>Oscar González Frutos</h1>
-    <p>Consultor - Análisis de Datos</p>
-    <a href="#contacto" style="display:inline-block; margin-top:1rem; padding:0.5rem 1rem; background:#fff; color:#222; border-radius:5px; font-weight:600;">Contáctame</a><br>
-    <a href="https://arandurapeedu-my.sharepoint.com/:b:/g/personal/gonzalezfrutos_mec_edu_py/EbTuzgKwk0BEhw0pvFJyR0sBGIjDuvg8_kQhy3FQiCs0WQ?e=jk5p2E" class="cv-link" target="_blank">Ver CV Completo</a>
-  </header>
-
-
- <nav style="background: #fff; padding: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
-  <div style="display: inline-flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; justify-content: center;">
-    
-    <!-- Enlaces de navegación -->
-    <a href="#sobre-mi" style="text-decoration: none; font-weight: 600; color: #333;">Sobre mí</a>
-    <a href="#portafolio" style="text-decoration: none; font-weight: 600; color: #333;">Portafolio</a>
-    <a href="#cursos-contacto" style="text-decoration: none; font-weight: 600; color: #333;">Cursos</a>
-    <a href="#contacto" style="text-decoration: none; font-weight: 600; color: #333;">Contacto</a>
-
-    <!-- Buscador centrado -->
-    <input type="text" id="buscador" placeholder="Buscar..."
-           style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; width: 200px;">
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-brand">Oscar González</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#sobre-mi">Sobre mí</a>
+    <a href="#habilidades-section">Habilidades</a>
+    <a href="#portafolio">Portafolio</a>
+    <a href="#galeria">Galería</a>
+    <a href="#contacto">Contacto</a>
+    <input type="text" id="buscador" class="nav-search" placeholder="🔍 Buscar...">
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <img src="images/oscar.jpg" alt="Oscar González Frutos" class="hero-avatar">
+    <div class="hero-badge">Consultor &amp; Docente</div>
+    <h1>Oscar González Frutos</h1>
+    <p class="subtitle">Especialista en Análisis de Datos &amp; Visualización</p>
+    <div class="hero-pills">
+      <span class="pill"><i class="fas fa-chart-bar"></i> Power BI</span>
+      <span class="pill"><i class="fas fa-database"></i> SQL</span>
+      <span class="pill"><i class="fab fa-python"></i> Python</span>
+      <span class="pill"><i class="fas fa-table"></i> Excel</span>
+      <span class="pill"><i class="fas fa-flask"></i> R / Shiny</span>
+      <span class="pill">+10 años de experiencia</span>
+    </div>
+    <div class="hero-ctas">
+      <a href="#contacto" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Contáctame</a>
+      <a href="https://arandurapeedu-my.sharepoint.com/:b:/g/personal/gonzalezfrutos_mec_edu_py/IQAeTqaGxWqmRKv_4z58INdsAZH5uoShbfNEarDlggPliQk?e=YDVB9M" class="btn btn-outline" target="_blank"><i class="fas fa-file-pdf"></i> Ver CV</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+</section>
 
-
- 
-  <section id="sobre-mi">
+<!-- SOBRE MÍ -->
+<section id="sobre-mi">
+  <div class="section-header fade-up">
     <h2>Sobre mí</h2>
-    <div class="card">
-      <p><strong>Licenciado en:</strong> Matemática Estadística por la Facultad de Ciencias Exactas y Naturales (FACEN - UNA).<br>
-         <strong>Magíster en:</strong> Estadística Aplicada por la Universidad de Granada, España (Programa BECAL).<br>
-         <strong>Certificación destacada:</strong> Data Science con R - HarvardX (Harvard University).<br><br>
-         Profesional con más de 10 años de experiencia en el análisis de datos y en la enseñanza de herramientas de análisis como SQL, Excel, Power BI, R y Python. He tenido el privilegio de capacitar a profesionales en instituciones públicas como el Banco Central del Paraguay (BCP), Itaipú Binacional, DGEEC, MEC, FACEN y el Ministerio de Desarrollo Social, así como en organizaciones privadas como Automotor, Banco Familiar, Bancoop y Sueñolar.<br><br>
-         Mi mayor motivación es enseñar. Estoy comprometido en ayudarte a dominar habilidades clave y aplicarlas con seguridad en contextos reales.</p>
+    <div class="section-line"></div>
+    <p>Formación, experiencia y compromiso con la enseñanza</p>
+  </div>
+  <div class="about-grid">
+    <div class="card about-text fade-up">
+      <h3><i class="fas fa-user-graduate"></i> Perfil profesional</h3>
+      <p>
+        <strong>Licenciado en Matemática Estadística</strong> – FACEN, Universidad Nacional de Asunción.<br><br>
+        <strong>Magíster en Estadística Aplicada</strong> – Universidad de Granada, España (Beca BECAL).<br><br>
+        <strong>Data Science con R</strong> – HarvardX, Harvard University.<br><br>
+        Profesional con más de <strong>10 años de experiencia</strong> en análisis de datos y capacitación en herramientas como SQL, Excel, Power BI, R y Python. He capacitado a profesionales en el BCP, Itaipú Binacional, DGEEC, MEC, FACEN, Ministerio de Desarrollo Social, Automotor, Banco Familiar, Bancoop, Sueñolar y CECON.<br><br>
+        Mi mayor motivación es <strong>enseñar</strong>: ayudarte a dominar habilidades clave y aplicarlas con seguridad en contextos reales.
+      </p>
     </div>
-  </section>
+    <div class="fade-up">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="num">10+</div>
+          <div class="lbl">Años de experiencia</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">15+</div>
+          <div class="lbl">Instituciones capacitadas</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">5</div>
+          <div class="lbl">Herramientas clave</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">2</div>
+          <div class="lbl">Posgrados internacionales</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
- 
+<!-- HABILIDADES -->
+<div id="habilidades-section">
+  <div class="section-inner">
+    <div class="section-header fade-up">
+      <h2>Habilidades técnicas</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-cats fade-up">
+      <div class="card skill-cat">
+        <h4><i class="fas fa-chart-pie" style="color:var(--primary)"></i> Visualización</h4>
+        <div class="skill-item">
+          <div class="skill-label"><span>Power BI</span><span>95%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="95"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>R Shiny</span><span>88%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="88"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Excel / Power Query</span><span>95%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="95"></div></div>
+        </div>
+      </div>
+      <div class="card skill-cat">
+        <h4><i class="fas fa-code" style="color:var(--primary)"></i> Programación</h4>
+        <div class="skill-item">
+          <div class="skill-label"><span>R</span><span>90%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Python</span><span>80%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="80"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>SQL / MySQL</span><span>92%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="92"></div></div>
+        </div>
+      </div>
+      <div class="card skill-cat">
+        <h4><i class="fas fa-graduation-cap" style="color:var(--primary)"></i> Docencia</h4>
+        <div class="skill-item">
+          <div class="skill-label"><span>Capacitación corporativa</span><span>98%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="98"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Diseño de cursos</span><span>90%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Estadística aplicada</span><span>95%</span></div>
+          <div class="skill-bar"><div class="skill-bar-fill" data-w="95"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- ======================== -->
-<!-- 🧩 PORTAFOLIO COMPLETO -->
-<!-- ======================== -->
-<section id="portafolio" class="card">
-  <h2>📊 Portafolio de Proyectos y Dashboards</h2>
-  <p style="margin-bottom:16px;">
-    Algunos ejemplos de proyectos desarrollados en <strong>Power BI, Excel, SQL y R Shiny</strong> aplicados al análisis de datos, visualización interactiva y toma de decisiones empresariales.
-  </p>
+<!-- PORTAFOLIO -->
+<section id="portafolio">
+  <div class="section-header fade-up">
+    <h2>Portafolio de proyectos</h2>
+    <div class="section-line"></div>
+    <p>Dashboards, análisis y soluciones aplicadas en Power BI, Excel, SQL y R</p>
+  </div>
+  <div class="portfolio-grid">
 
-  <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:center;">
-
-    <!-- Power BI: Dashboard Merx -->
-    <div class="card" style="border:2px solid #0066cc; box-shadow:0 0 15px rgba(0,102,204,0.2); overflow:hidden; width:360px;">
-      <img src="images/p6.png" alt="Dashboard de métricas clave de Merx" style="width:100%; height:210px; object-fit:cover;">
-      <div style="padding:12px;">
-        <h4 style="margin:0; color:#0066cc;">Dashboard de métricas clave – Merx</h4>
-        <p style="font-size:0.92rem; line-height:1.45; margin-top:6px;">
-          Reporte de ventas, utilidades y márgenes con segmentación dinámica por categorías, canales y subcategorías. Incluye análisis de rentabilidad y crecimiento mensual.
-        </p>
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap">
+        <img src="images/p6.png" alt="Dashboard Merx">
+        <div class="portfolio-overlay"><span>Ver proyecto</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">Power BI</span>
+        <h4>Dashboard de métricas clave – Merx</h4>
+        <p>Reporte de ventas, utilidades y márgenes con segmentación dinámica por categorías, canales y subcategorías. Análisis de rentabilidad y crecimiento mensual.</p>
       </div>
     </div>
 
-    <!-- Power BI: Dashboard financiero -->
-    <div class="card" style="border:2px solid #0066cc; box-shadow:0 0 15px rgba(0,102,204,0.2); overflow:hidden; width:360px;">
-      <img src="images/p4.png" alt="Dashboard financiero" style="width:100%; height:210px; object-fit:cover;">
-      <div style="padding:12px;">
-        <h4 style="margin:0; color:#0066cc;">Dashboard Financiero – Margen y Costos</h4>
-        <p style="font-size:0.92rem; line-height:1.45; margin-top:6px;">
-          Seguimiento mensual de ingresos, costos y utilidades por centro de costos, con alertas visuales y comparaciones interanuales automáticas.
-        </p>
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap">
+        <img src="images/p4.png" alt="Dashboard financiero">
+        <div class="portfolio-overlay"><span>Ver proyecto</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">Power BI</span>
+        <h4>Dashboard Financiero – Margen y Costos</h4>
+        <p>Seguimiento mensual de ingresos, costos y utilidades por centro de costos, con alertas visuales y comparaciones interanuales automáticas.</p>
       </div>
     </div>
 
-    <!-- Power BI: Dashboard clientes -->
-    
-
-    <!-- Excel Contoso -->
-    <div class="card" style="border:2px solid #0066cc; box-shadow:0 0 15px rgba(0,102,204,0.2); width:360px;">
-      <img src="images/e1.png" alt="Dashboard Contoso" style="width:100%; border-radius:8px; margin:1rem 0;">
-      <div style="padding:12px;">
-        <h4 style="margin:0; color:#0066cc;">Análisis en Excel – Contoso Sales (100 000 registros)</h4>
-        <p style="font-size:0.92rem; line-height:1.45;">
-          Proyecto desarrollado con <strong>Power Query</strong> y <strong>Power Pivot</strong> sobre el dataset Contoso BI, aplicando modelado relacional y medidas DAX.
-          <br><br>
-          <a href="https://github.com/oscar-pry/excel/blob/main/Medidas%20DAX.pdf" target="_blank">📄 Ver PDF con medidas DAX</a><br>
-          <a href="https://mega.nz/file/ZE43AZzC#NBxkCd37T25z900PovjQ2n8cwIo44rIJLc2blz58JcM" target="_blank" style="display:inline-block; background:#0066cc; color:#fff; padding:0.4rem 0.8rem; border-radius:5px; font-weight:600; text-decoration:none; margin-top:8px;">🔗 Ver archivo Excel</a>
-        </p>
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8f4fd,#c7e4f5);">
+        <img src="images/e1.png" alt="Excel Contoso" style="object-fit:contain;padding:1rem;">
+        <div class="portfolio-overlay"><span>Ver proyecto</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">Excel</span>
+        <h4>Análisis en Excel – Contoso Sales (100 000 registros)</h4>
+        <p>Power Query y Power Pivot sobre el dataset Contoso BI. Modelado relacional y medidas DAX.</p>
+        <div class="portfolio-links">
+          <a href="https://mega.nz/file/ZE43AZzC#NBxkCd37T25z900PovjQ2n8cwIo44rIJLc2blz58JcM" target="_blank" class="link-primary">Ver archivo Excel</a>
+          <a href="https://github.com/oscar-pry/excel/blob/main/Medidas%20DAX.pdf" target="_blank" class="link-ghost">PDF medidas DAX</a>
+        </div>
       </div>
     </div>
 
-    <!-- SQL Northwind -->
-    <div class="card" style="border:2px solid #0066cc; box-shadow:0 0 15px rgba(0,102,204,0.2); width:360px;">
-      <div style="padding:12px;">
-        <h4 style="margin:0; color:#0066cc;"><i class="fas fa-database"></i> Análisis con MySQL – Northwind</h4>
-        <p style="font-size:0.92rem; line-height:1.45; margin-top:6px;">
-          Consultas SQL por nivel (básico, intermedio, avanzado) sobre la base Northwind: uniones, triggers y auditorías automáticas.
-          <br>Incluye visualización ERD y documentación completa.
-        </p>
-        <a href="https://github.com/oscar-pry/sql/blob/main/Portafolio_SQL.pdf" target="_blank" style="display:inline-block; background:#0066cc; color:#fff; padding:0.4rem 0.8rem; border-radius:5px; font-weight:600; text-decoration:none;">🔗 Ver portafolio completo</a>
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap" style="background:linear-gradient(135deg,#e8edff,#c7d4f5);display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-database" style="font-size:5rem;color:#0052cc;opacity:0.3;"></i>
+        <div class="portfolio-overlay"><span>Ver proyecto</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">SQL</span>
+        <h4>Análisis con MySQL – Northwind</h4>
+        <p>Consultas SQL por nivel (básico, intermedio, avanzado): uniones, triggers y auditorías automáticas. Incluye ERD y documentación completa.</p>
+        <div class="portfolio-links">
+          <a href="https://github.com/oscar-pry/sql/blob/main/Portafolio_SQL.pdf" target="_blank" class="link-primary">Ver portafolio completo</a>
+        </div>
       </div>
     </div>
 
-    <!-- R Shiny Laboral -->
-    <div class="card" style="border:2px solid #0066cc; box-shadow:0 0 15px rgba(0,102,204,0.2); width:360px;">
-      <img src="images/ine.jpg" alt="INE Paraguay" style="width:100%; border-radius:8px; margin:1rem 0;">
-      <div style="padding:12px;">
-        <h4 style="margin:0; color:#0066cc;">Estudio sobre el Mercado Laboral en Paraguay</h4>
-        <p style="font-size:0.92rem; line-height:1.45;">
-          Aplicación desarrollada con <strong>R, Shiny y Plotly</strong> para visualizar el mercado laboral paraguayo.  
-          Proyecto financiado por <strong>SINAFOCAL</strong> y validado con datos del 
-          <a href="https://anda.ine.gov.py/anda/index.php/home" target="_blank">Instituto Nacional de Estadística (INE)</a>.
-          <br><a href="https://cicapy.shinyapps.io/dashboard/" target="_blank">🔗 Ver informe interactivo</a><br>
-          <a href="https://www.linkedin.com/posts/oscar-gonz%C3%A1lez-frutos_estudio-sobre-el-mercado-laboral-en-paraguay-activity-7346159609478295552-GitD" target="_blank">💬 Ver en LinkedIn</a>
-        </p>
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap">
+        <img src="images/ine.jpg" alt="INE Paraguay">
+        <div class="portfolio-overlay"><span>Ver informe</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">R Shiny</span>
+        <h4>Estudio sobre el Mercado Laboral en Paraguay</h4>
+        <p>App con R, Shiny y Plotly para visualizar el mercado laboral paraguayo. Financiado por SINAFOCAL; datos del INE.</p>
+        <div class="portfolio-links">
+          <a href="https://cicapy.shinyapps.io/dashboard/" target="_blank" class="link-primary">Informe interactivo</a>
+          <a href="https://www.linkedin.com/posts/oscar-gonz%C3%A1lez-frutos_estudio-sobre-el-mercado-laboral-en-paraguay-activity-7346159609478295552-GitD" target="_blank" class="link-ghost">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card fade-up">
+      <div class="portfolio-img-wrap">
+        <img src="images/informe.jpg" alt="Informe">
+        <div class="portfolio-overlay"><span>Ver proyecto</span></div>
+      </div>
+      <div class="portfolio-body">
+        <span class="portfolio-tag">Análisis</span>
+        <h4>Informe estadístico aplicado</h4>
+        <p>Análisis estadístico descriptivo e inferencial presentado con visualizaciones profesionales para toma de decisiones institucionales.</p>
       </div>
     </div>
 
   </div>
 </section>
 
-
-
-
-
-
-  <h3 style="margin-top:3rem; font-size:1.4rem; color:#0066cc;">📸 Galería de Capacitaciones Presenciales</h3>
-  <div class="galeria-capacitaciones">
-    <img src="images/f1.jpg" alt="Capacitación presencial 1">
-    <img src="images/f2.jpg" alt="Capacitación presencial 2">
-    <img src="images/f3.jpg" alt="Capacitación presencial 3">
-    <img src="images/f4.jpg" alt="Capacitación presencial 4">
-    <img src="images/f5.jpg" alt="Capacitación presencial 5">
-    <img src="images/f6.jpg" alt="Capacitación presencial 6">
-    <img src="images/f7.jpg" alt="Capacitación presencial 7">
-    
+<!-- GALERÍA -->
+<section id="galeria" style="padding-top:1rem;">
+  <div class="section-header fade-up">
+    <h2>Galería</h2>
+    <div class="section-line"></div>
   </div>
 
-  <h3 style="margin-top:3rem; font-size:1.4rem; color:#0066cc;">🖥️ Galería de Cursos Online </h3>
-  <div class="galeria-capacitaciones">
-    <img src="images/curso1.jpg" alt="Curso online 1">
-    <img src="images/curso2.jpg" alt="Curso online 2">
-    <img src="images/curso3.jpg" alt="Curso online 3">
-    <img src="images/curso4.jpg" alt="Curso online 4">
-    <img src="images/curso5.jpg" alt="Curso online 5">
-    <img src="images/curso6.jpg" alt="Curso online 6">
-    <img src="images/curso7.jpg" alt="Curso online 7">
-    
+  <div class="gallery-section-title fade-up"><i class="fas fa-chalkboard-teacher"></i> Capacitaciones presenciales</div>
+  <div class="gallery-grid fade-up" id="galPresencial">
+    <div class="gallery-item"><img src="images/f1.jpg" alt="Capacitación 1"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f2.jpg" alt="Capacitación 2"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f3.jpg" alt="Capacitación 3"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f4.jpg" alt="Capacitación 4"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f5.jpg" alt="Capacitación 5"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f6.jpg" alt="Capacitación 6"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f7.jpg" alt="Capacitación 7"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/f8.jpg" alt="Capacitación 8"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+  </div>
+
+  <div class="gallery-section-title fade-up" style="margin-top:2rem;"><i class="fas fa-laptop"></i> Cursos online</div>
+  <div class="gallery-grid fade-up" id="galOnline">
+    <div class="gallery-item"><img src="images/curso1.jpg" alt="Curso online 1"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso2.jpg" alt="Curso online 2"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso3.jpg" alt="Curso online 3"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso4.jpg" alt="Curso online 4"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso5.jpg" alt="Curso online 5"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso6.jpg" alt="Curso online 6"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
+    <div class="gallery-item"><img src="images/curso7.jpg" alt="Curso online 7"><div class="gallery-item-overlay"><i class="fas fa-search-plus"></i></div></div>
   </div>
 </section>
 
+<!-- CONTACTO -->
 <section id="contacto">
-  <h2>Contacto</h2>
-  
-  <!-- Formulario funcional con Formspree -->
-  <form action="https://formspree.io/f/xgvzkzeg" method="POST">
-    <input type="text" name="nombre" placeholder="Nombre" required />
-    <input type="email" name="_replyto" placeholder="Correo" required />
-    <textarea name="mensaje" placeholder="Mensaje" rows="5" required></textarea>
-    <button type="submit">Enviar</button>
-  </form>
-
-  <!-- Botón directo a WhatsApp con mensaje predefinido -->
-  <a href="https://wa.me/595981996774?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20tus%20cursos" 
-     target="_blank" 
-     title="Enviar mensaje por WhatsApp"
-     style="display: inline-block; padding: 0.75rem 1.5rem; background: #25d366; color: white; border-radius: 5px; font-weight: 600; margin-top: 1.5rem; text-decoration: none; font-size: 1rem;">
-    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Escribir por WhatsApp
-  </a>
-
-  <!-- Contacto textual -->
-  <p style="margin-top: 1.5rem;">Email: gonzalezfrutos@gmail.com | WhatsApp: +595 981 996 774</p>
-  
-  <!-- Íconos de redes sociales -->
-  <div class="social-icons">
-    <a href="https://wa.me/595981996774" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-    <a href="https://www.facebook.com/oscarfrutos" target="_blank" title="Facebook"><i class="fab fa-facebook"></i></a>
-    <a href="https://www.instagram.com/oscarfrutos" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-    <a href="https://www.linkedin.com/in/gonzalezfrutos" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+  <div class="section-header fade-up">
+    <h2>Contacto</h2>
+    <div class="section-line"></div>
+    <p>¿Necesitás capacitación o consultoría? Escribime.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="card contact-info fade-up">
+      <h3>Información de contacto</h3>
+      <p>Estoy disponible para capacitaciones corporativas, consultorías de datos y proyectos de análisis.</p>
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <span>ogf.data@outlook.com</span>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-whatsapp"></i>
+        <span>+595 981 996 774</span>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Asunción, Paraguay</span>
+      </div>
+      <div class="social-row">
+        <a href="https://wa.me/595981996774?text=Hola%2C%20me%20gustar%C3%ADa%20recibir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20tus%20cursos" target="_blank" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://www.linkedin.com/in/gonzalezfrutos" target="_blank" class="social-btn linkedin"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        <a href="https://www.facebook.com/oscarfrutos" target="_blank" class="social-btn facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.instagram.com/oscarfrutos" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+    <div class="card fade-up">
+      <h3 style="margin-bottom:1rem; color:var(--primary)">Enviar mensaje</h3>
+      <form action="https://formspree.io/f/xgvzkzeg" method="POST">
+        <input type="text" name="nombre" placeholder="Tu nombre" required />
+        <input type="email" name="_replyto" placeholder="Tu correo electrónico" required />
+        <textarea name="mensaje" placeholder="Contame en qué puedo ayudarte..." required></textarea>
+        <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> Enviar mensaje</button>
+      </form>
+    </div>
   </div>
 </section>
 
+<footer>
+  <p>&copy; 2025 Oscar González Frutos · Asunción, Paraguay · <a href="mailto:ogf.data@outlook.com">ogf.data@outlook.com</a></p>
+</footer>
 
-  <footer>
-    <p>&copy; 2025 Oscar González Frutos. Todos los derechos reservados.</p>
-  </footer>
+<!-- BOTÓN VOLVER ARRIBA -->
+<button id="backToTop" aria-label="Volver arriba"><i class="fas fa-arrow-up"></i></button>
 
-  <!-- 🔍 Script del buscador interno -->
-  <script>
-    document.getElementById('buscador').addEventListener('input', function () {
-      const texto = this.value.toLowerCase();
-      const secciones = document.querySelectorAll('section');
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lbPrev"><i class="fas fa-chevron-left"></i></button>
+  <img id="lbImg" src="" alt="">
+  <button class="lightbox-nav lightbox-next" id="lbNext"><i class="fas fa-chevron-right"></i></button>
+</div>
 
-      secciones.forEach(seccion => {
-        if (seccion.id === 'contacto' || seccion.id === 'cursos-contacto') return;
-        const contenido = seccion.textContent.toLowerCase();
-        seccion.style.display = contenido.includes(texto) ? 'block' : 'none';
-      });
+<script>
+  // NAV SCROLL + HAMBURGER
+  const nav = document.getElementById('mainNav');
+  const navLinks = document.getElementById('navLinks');
+  const hamburger = document.getElementById('hamburger');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 30);
+    document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+  });
+  hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+  // ACTIVE NAV
+  const sections = document.querySelectorAll('section[id], div[id]');
+  const navAs = document.querySelectorAll('.nav-links a[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
     });
-  </script>
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
 
+  // FADE-UP ANIMATION
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const fadeObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  fadeEls.forEach(el => fadeObs.observe(el));
+
+  // SKILL BARS
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.w + '%';
+        });
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.skill-cat').forEach(el => barObs.observe(el));
+
+  // BACK TO TOP
+  document.getElementById('backToTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  // LIGHTBOX
+  let galleryImages = [];
+  let lbIndex = 0;
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+
+  function openLightbox(imgs, idx) {
+    galleryImages = imgs;
+    lbIndex = idx;
+    lbImg.src = imgs[idx];
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function lbNav(dir) {
+    lbIndex = (lbIndex + dir + galleryImages.length) % galleryImages.length;
+    lbImg.src = galleryImages[lbIndex];
+  }
+
+  document.querySelectorAll('.gallery-grid').forEach(grid => {
+    const items = grid.querySelectorAll('.gallery-item img');
+    const srcs = Array.from(items).map(i => i.src);
+    items.forEach((img, idx) => {
+      img.parentElement.addEventListener('click', () => openLightbox(srcs, idx));
+    });
+  });
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', () => lbNav(-1));
+  document.getElementById('lbNext').addEventListener('click', () => lbNav(1));
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+  });
+
+  // BUSCADOR
+  document.getElementById('buscador').addEventListener('input', function () {
+    const txt = this.value.toLowerCase();
+    document.querySelectorAll('section[id]').forEach(s => {
+      if (s.id === 'hero' || s.id === 'contacto') return;
+      s.style.display = !txt || s.textContent.toLowerCase().includes(txt) ? '' : 'none';
+    });
+  });
+</script>
 </body>
-
-
-
 </html>
