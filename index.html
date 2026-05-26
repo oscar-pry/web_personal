@@ -885,6 +885,191 @@
       font-weight: 600;
     }
 
+    /* ── CONSULTORÍA DS ── */
+    .consulting-sep {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 2rem;
+    }
+    .consulting-sep-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .consulting-sep span {
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      padding: 0.3rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+    .consulting-intro {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .consulting-intro .cbadge {
+      display: inline-block;
+      background: rgba(0,82,204,0.08);
+      border: 1px solid rgba(0,82,204,0.2);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      margin-bottom: 0.8rem;
+    }
+    .consulting-intro h3 {
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.3px;
+    }
+    .consulting-intro p {
+      color: var(--text-muted);
+      font-size: 0.93rem;
+      max-width: 580px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .consulting-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+      gap: 1.1rem;
+      margin-bottom: 1.8rem;
+    }
+    .consult-card {
+      background: var(--bg-white);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+    }
+    .consult-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+      border-color: rgba(0,82,204,0.3);
+    }
+    .consult-icon { font-size: 1.8rem; line-height: 1; margin-bottom: 0.7rem; }
+    .consult-card h5 {
+      font-size: 0.93rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 0.45rem;
+      line-height: 1.3;
+    }
+    .consult-card .cdesc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 0.75rem;
+    }
+    .consult-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .ctag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(0,82,204,0.07);
+      color: var(--primary);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+    .consult-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      padding: 1.4rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .cstack-pill {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .consult-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .btn-consult {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(0,82,204,0.3);
+    }
+    .btn-consult:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-consult-wa {
+      background: #25d366;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.3);
+    }
+    .btn-consult-wa:hover { background: #1ebe5c; transform: translateY(-2px); }
+
+    /* ── TABLAS SISTEMA BI ── */
+    .bi-tables-wrap { margin: 2rem 0 2rem; }
+    .bi-table-block { margin-bottom: 2rem; }
+    .bi-table-block h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--accent);
+      padding-left: 0.7rem;
+    }
+    .bi-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .bi-table thead th {
+      background: #0d2060;
+      color: #fff;
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .bi-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    .bi-table tbody tr:hover { background: rgba(0,82,204,0.04); }
+    .bi-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
+    .bi-table tbody tr:nth-child(even):hover { background: rgba(0,82,204,0.04); }
+    .bi-table td {
+      padding: 0.65rem 1rem;
+      vertical-align: top;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .bi-table td:first-child { font-weight: 600; color: var(--text); }
+    .cmp-ok  { color: #16a34a; }
+    .cmp-warn { color: #d97706; }
+    .cmp-no  { color: #dc2626; }
+    @media (max-width: 768px) {
+      .bi-table { font-size: 0.76rem; }
+      .bi-table td, .bi-table th { padding: 0.45rem 0.55rem; }
+    }
+
     /* ── BACK TO TOP ── */
     #backToTop {
       position: fixed;
@@ -1272,6 +1457,204 @@
       </ul>
     </div>
 
+  </div>
+
+  <!-- CONSULTORÍA EN DATA SCIENCE -->
+  <div class="consulting-sep fade-up">
+    <div class="consulting-sep-line"></div>
+    <span>Consultoría en Data Science</span>
+    <div class="consulting-sep-line"></div>
+  </div>
+
+  <div class="consulting-intro fade-up">
+    <div class="cbadge">🔬 Proyectos analíticos a medida</div>
+    <h3>Inteligencia de Negocios con Analítica Avanzada</h3>
+    <p>Convertimos los datos de ventas, clientes y productos en decisiones estratégicas mediante Machine Learning. Las empresas que toman decisiones basadas en datos crecen <strong>2,5× más rápido</strong>. Diagnóstico inicial <strong>gratuito y sin compromiso</strong>.</p>
+  </div>
+
+  <div class="consulting-grid">
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">👥</div>
+      <h5>Segmentación de Clientes (RFM)</h5>
+      <p class="cdesc">Clasifica cada cliente por Recencia, Frecuencia y Valor monetario. El algoritmo K-Means agrupa segmentos accionables para campañas diferenciadas y recuperación de clientes inactivos.</p>
+      <div class="consult-tags">
+        <span class="ctag">K-Means Clustering</span>
+        <span class="ctag">+20% reactivación</span>
+      </div>
+    </div>
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">🚨</div>
+      <h5>Predicción de Abandono (Churn)</h5>
+      <p class="cdesc">Anticipa qué clientes están en riesgo de dejar de comprar y genera una lista priorizada para que el equipo comercial actúe antes de perderlos.</p>
+      <div class="consult-tags">
+        <span class="ctag">Regresión Logística</span>
+        <span class="ctag">-25% abandono</span>
+      </div>
+    </div>
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">📈</div>
+      <h5>Pronóstico de Ventas</h5>
+      <p class="cdesc">Proyecta los próximos 3 meses por categoría considerando tendencia y estacionalidad, con intervalos de confianza para una planificación financiera precisa.</p>
+      <div class="consult-tags">
+        <span class="ctag">Holt-Winters</span>
+        <span class="ctag">MAPE &lt; 12%</span>
+      </div>
+    </div>
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">🔍</div>
+      <h5>Detección de Anomalías</h5>
+      <p class="cdesc">Detecta automáticamente errores de precio, volúmenes inusuales o posibles fraudes. Genera alertas en tiempo real sin necesidad de reglas manuales.</p>
+      <div class="consult-tags">
+        <span class="ctag">Isolation Forest</span>
+        <span class="ctag">Tiempo real</span>
+      </div>
+    </div>
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">🏆</div>
+      <h5>Análisis ABC de Productos (Pareto)</h5>
+      <p class="cdesc">Aplica la regla 80/20 al catálogo para clasificar productos A, B y C, e identifica clase A con riesgo de quiebre de stock antes de que ocurra.</p>
+      <div class="consult-tags">
+        <span class="ctag">Análisis Pareto</span>
+        <span class="ctag">-30% quiebres</span>
+      </div>
+    </div>
+
+    <div class="consult-card fade-up">
+      <div class="consult-icon">🛒</div>
+      <h5>Análisis de Canasta (Market Basket)</h5>
+      <p class="cdesc">Descubre qué productos se compran juntos para diseñar combos, estrategias de cross-selling y optimizar la distribución en góndola con evidencia estadística.</p>
+      <div class="consult-tags">
+        <span class="ctag">Apriori</span>
+        <span class="ctag">+15–20% ticket</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SISTEMA BI: ARQUITECTURA Y COMPARACIÓN -->
+  <div class="bi-tables-wrap fade-up">
+    <div class="bi-table-block">
+      <h4>Arquitectura en tres capas</h4>
+      <div style="overflow-x:auto;">
+        <table class="bi-table">
+          <thead>
+            <tr>
+              <th>Capa</th>
+              <th>Tecnología</th>
+              <th>Qué hace</th>
+              <th>Para quién</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📊 Presentación</td>
+              <td>Streamlit · Power BI</td>
+              <td>Dashboard interactivo, filtros, gráficos en tiempo real</td>
+              <td>Gerentes y equipo comercial</td>
+            </tr>
+            <tr>
+              <td>🧠 Inteligencia</td>
+              <td>Python · Scikit-learn · Statsmodels</td>
+              <td>Modelos de ML entrenados con sus datos históricos</td>
+              <td>Motor interno automático</td>
+            </tr>
+            <tr>
+              <td>🔌 API / Servicios</td>
+              <td>FastAPI · Uvicorn</td>
+              <td>Expone los modelos como servicios web seguros y rápidos</td>
+              <td>Integración con sistemas existentes</td>
+            </tr>
+            <tr>
+              <td>💾 Datos</td>
+              <td>PostgreSQL · CSV · Excel</td>
+              <td>Almacena y procesa el historial de ventas y clientes</td>
+              <td>Carga automática o manual</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bi-table-block">
+      <h4>Comparación con alternativas</h4>
+      <div style="overflow-x:auto;">
+        <table class="bi-table">
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th>Este sistema</th>
+              <th>ERP genérico</th>
+              <th>Consultor externo</th>
+              <th>Reportes en Excel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Actualización de datos</td>
+              <td><span class="cmp-ok">✅</span> Automática / diaria</td>
+              <td><span class="cmp-warn">⚠️</span> Manual o módulo extra</td>
+              <td><span class="cmp-no">❌</span> Una sola vez</td>
+              <td><span class="cmp-no">❌</span> Manual, costosa</td>
+            </tr>
+            <tr>
+              <td>Predicción de churn</td>
+              <td><span class="cmp-ok">✅</span> Incluida con ML</td>
+              <td><span class="cmp-no">❌</span> No disponible</td>
+              <td><span class="cmp-warn">⚠️</span> Análisis puntual</td>
+              <td><span class="cmp-no">❌</span> Imposible</td>
+            </tr>
+            <tr>
+              <td>Detección de anomalías</td>
+              <td><span class="cmp-ok">✅</span> Automática, tiempo real</td>
+              <td><span class="cmp-warn">⚠️</span> Solo reglas fijas</td>
+              <td><span class="cmp-no">❌</span> No incluida</td>
+              <td><span class="cmp-no">❌</span> No existe</td>
+            </tr>
+            <tr>
+              <td>Adaptado a sus datos</td>
+              <td><span class="cmp-ok">✅</span> 100% personalizado</td>
+              <td><span class="cmp-no">❌</span> Genérico, rígido</td>
+              <td><span class="cmp-warn">⚠️</span> Parcial</td>
+              <td><span class="cmp-no">❌</span> Genérico</td>
+            </tr>
+            <tr>
+              <td>Acceso web / móvil</td>
+              <td><span class="cmp-ok">✅</span> Sin instalación</td>
+              <td><span class="cmp-warn">⚠️</span> Requiere licencia/PC</td>
+              <td><span class="cmp-no">❌</span> Solo PDF/PPT</td>
+              <td><span class="cmp-no">❌</span> Solo en PC</td>
+            </tr>
+            <tr>
+              <td>Costo de mantenimiento</td>
+              <td><span class="cmp-ok">✅</span> Bajo (open source)</td>
+              <td><span class="cmp-no">❌</span> Licencias costosas</td>
+              <td><span class="cmp-no">❌</span> Cada consulta</td>
+              <td><span class="cmp-warn">⚠️</span> Tiempo del equipo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="consult-stack fade-up">
+    <span class="cstack-pill"><i class="fab fa-python"></i> Python</span>
+    <span class="cstack-pill">Scikit-learn</span>
+    <span class="cstack-pill">FastAPI</span>
+    <span class="cstack-pill">Streamlit</span>
+    <span class="cstack-pill"><i class="fas fa-chart-bar"></i> Power BI</span>
+    <span class="cstack-pill">R / Shiny</span>
+    <span class="cstack-pill"><i class="fas fa-database"></i> SQL / PostgreSQL</span>
+  </div>
+
+  <div class="consult-cta fade-up">
+    <a href="propuesta_consultoria.html" target="_blank" class="btn btn-consult"><i class="fas fa-file-alt"></i> Ver propuesta completa</a>
+    <a href="https://wa.me/595981996774?text=Hola%2C%20me%20gustar%C3%ADa%20consultar%20sobre%20un%20proyecto%20de%20anal%C3%ADtica%20de%20datos" target="_blank" class="btn btn-consult-wa"><i class="fab fa-whatsapp"></i> Consultar proyecto</a>
   </div>
 
   <!-- IA Copiloto -->
