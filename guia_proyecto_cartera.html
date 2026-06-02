@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Analítico de Cartera de Créditos — Guía Técnica</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#f0f4fa;color:#1a2035;line-height:1.7}
+
+/* ── VARIABLES ────────────────────────────────────────────────── */
+:root{
+  --azul:#0D2347;
+  --azul2:#1A4A8A;
+  --accent:#C8831A;
+  --verde:#2E8B57;
+  --rojo:#C0392B;
+  --naranja:#E8871A;
+  --gris:#6C757D;
+  --bg:#f0f4fa;
+  --white:#fff;
+  --border:#e2e8f4;
+  --shadow:0 4px 20px rgba(13,35,71,.10);
+  --shadow-lg:0 8px 40px rgba(13,35,71,.15);
+  --radius:14px;
+}
+
+/* ── TIPOGRAFÍA ───────────────────────────────────────────────── */
+h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15}
+h2{font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:700;color:var(--azul)}
+h3{font-size:1.15rem;font-weight:700;color:var(--azul)}
+h4{font-size:1rem;font-weight:600}
+code,pre{font-family:'JetBrains Mono',monospace}
+
+/* ── LAYOUT ───────────────────────────────────────────────────── */
+.container{max-width:1060px;margin:0 auto;padding:0 24px}
+section{padding:4rem 24px;max-width:1060px;margin:0 auto}
+
+/* ── NAV ──────────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:.8rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-brand{font-weight:700;font-size:.95rem;color:var(--azul);text-decoration:none}
+.nav-links{display:flex;gap:1.4rem}
+.nav-links a{text-decoration:none;font-size:.85rem;font-weight:500;color:var(--gris);transition:color .2s}
+.nav-links a:hover{color:var(--azul)}
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+#hero{
+  min-height:100vh;
+  background:linear-gradient(135deg,#060e1e 0%,#0D2347 45%,#1A4A8A 100%);
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:7rem 1.5rem 5rem;position:relative;overflow:hidden;
+}
+#hero::before{
+  content:'';position:absolute;
+  width:800px;height:800px;
+  background:radial-gradient(circle,rgba(200,131,26,.12) 0%,transparent 70%);
+  top:-300px;right:-200px;border-radius:50%;
+}
+#hero::after{
+  content:'';position:absolute;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(26,74,138,.25) 0%,transparent 70%);
+  bottom:-200px;left:-100px;border-radius:50%;
+}
+.hero-content{position:relative;z-index:1;max-width:780px}
+.hero-badge{
+  display:inline-block;
+  background:rgba(200,131,26,.2);border:1px solid rgba(200,131,26,.45);
+  color:#f4c55a;font-size:.75rem;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;padding:.35rem 1rem;border-radius:20px;margin-bottom:1.2rem;
+}
+#hero h1{color:#fff;margin-bottom:.8rem}
+#hero .sub{font-size:1.1rem;color:rgba(255,255,255,.65);margin-bottom:2.5rem;font-weight:300}
+.kpi-row{
+  display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:2.5rem;
+}
+.kpi-chip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:#fff;padding:.5rem 1.1rem;border-radius:24px;font-size:.85rem;font-weight:600;
+  display:flex;align-items:center;gap:.4rem;
+}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.6rem;border-radius:8px;
+  font-weight:700;font-size:.92rem;text-decoration:none;
+  transition:all .25s;cursor:pointer;border:none;
+}
+.btn-gold{background:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(200,131,26,.45)}
+.btn-gold:hover{background:#a8681a;transform:translateY(-2px)}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3)}
+.btn-outline:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+
+/* ── SECTION HEADERS ──────────────────────────────────────────── */
+.sec-header{text-align:center;margin-bottom:3rem}
+.sec-header p{color:var(--gris);font-size:1rem;margin-top:.4rem}
+.sec-line{width:52px;height:4px;background:linear-gradient(90deg,var(--azul),var(--accent));border-radius:2px;margin:.8rem auto 0}
+
+/* ── CARDS ────────────────────────────────────────────────────── */
+.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.6rem 1.8rem}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(440px,1fr));gap:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+
+/* ── PROBLEMA / DOLOR ─────────────────────────────────────────── */
+#problema{background:var(--white)}
+.problema-wrap{max-width:1060px;margin:0 auto;padding:4rem 24px}
+.dolor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:2rem}
+.dolor-card{
+  background:#fff5f5;border:1px solid #fdd;border-radius:var(--radius);
+  padding:1.4rem;border-left:4px solid var(--rojo);
+}
+.dolor-card i{font-size:1.5rem;color:var(--rojo);margin-bottom:.7rem;display:block}
+.dolor-card h4{margin-bottom:.4rem;color:var(--rojo)}
+.dolor-card p{font-size:.87rem;color:#555}
+
+/* ── PIPELINE ─────────────────────────────────────────────────── */
+#pipeline{background:var(--azul)}
+.pipeline-title{color:#fff;text-align:center;margin-bottom:3rem}
+.pipeline-title p{color:rgba(255,255,255,.6);margin-top:.5rem}
+.pipeline-flow{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  align-items:center;gap:0;
+}
+.pipe-step{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;padding:1.2rem 1rem;text-align:center;
+  width:130px;min-height:130px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.5rem;transition:background .25s;
+}
+.pipe-step:hover{background:rgba(255,255,255,.14)}
+.pipe-step .num{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--accent);color:#fff;
+  font-size:.8rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.pipe-step i{font-size:1.5rem;color:rgba(255,255,255,.75)}
+.pipe-step .lbl{font-size:.78rem;color:rgba(255,255,255,.85);font-weight:600;line-height:1.3}
+.pipe-arrow{color:rgba(255,255,255,.3);font-size:1.2rem;padding:0 .3rem}
+
+/* ── MODULOS ──────────────────────────────────────────────────── */
+.modulo{
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);background:var(--white);
+  margin-bottom:2rem;
+}
+.modulo-header{
+  padding:1.2rem 1.6rem;display:flex;align-items:center;gap:1rem;
+  border-bottom:1px solid var(--border);
+}
+.modulo-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--azul);color:#fff;
+  font-size:1rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.modulo-title{flex:1}
+.modulo-title h3{margin:0;color:var(--azul)}
+.modulo-title span{font-size:.82rem;color:var(--gris)}
+.modulo-body{padding:1.6rem}
+.modulo-body p{color:#444;font-size:.93rem;margin-bottom:.8rem}
+.modulo-body ul{padding-left:1.4rem;color:#444;font-size:.92rem}
+.modulo-body ul li{margin-bottom:.4rem}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+.tag{
+  padding:.25rem .7rem;border-radius:20px;
+  font-size:.77rem;font-weight:600;
+}
+.tag-py{background:#e3f2fd;color:#1565c0}
+.tag-ml{background:#e8f5e9;color:#2e7d32}
+.tag-data{background:#fce4ec;color:#c62828}
+.tag-api{background:#f3e5f5;color:#7b1fa2}
+.tag-nb{background:#fff3e0;color:#e65100}
+
+/* ── OUTPUT BOXES ─────────────────────────────────────────────── */
+.output-box{
+  background:#f8fafe;border:1px solid var(--border);border-radius:10px;
+  padding:1rem 1.2rem;margin-top:1rem;font-size:.87rem;
+}
+.output-box .out-label{
+  font-size:.72rem;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--gris);margin-bottom:.5rem;
+}
+.output-row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.4rem}
+.out-chip{
+  background:var(--white);border:1px solid var(--border);border-radius:8px;
+  padding:.3rem .7rem;font-size:.82rem;font-weight:500;
+  display:flex;align-items:center;gap:.3rem;
+}
+.out-chip i{font-size:.75rem;color:var(--accent)}
+
+/* ── METRICA DESTAQUE ─────────────────────────────────────────── */
+.metric-highlight{
+  background:linear-gradient(135deg,var(--azul),var(--azul2));
+  border-radius:var(--radius);padding:1.4rem 1.6rem;
+  display:flex;align-items:center;gap:1.2rem;color:#fff;
+}
+.metric-highlight .big{font-size:2.2rem;font-weight:800;color:#f4c55a}
+.metric-highlight p{font-size:.85rem;opacity:.8;margin-top:.2rem}
+
+/* ── RESULTADOS ───────────────────────────────────────────────── */
+.result-card{
+  background:var(--white);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1.4rem 1.6rem;
+  border-top:4px solid var(--accent);
+}
+.result-card .big-num{font-size:2.4rem;font-weight:800;color:var(--azul);line-height:1}
+.result-card .lbl{font-size:.82rem;color:var(--gris);font-weight:500;margin-top:.3rem}
+.result-card .detail{font-size:.87rem;color:#444;margin-top:.6rem}
+
+/* ── DIAGRAMA FEATURES ────────────────────────────────────────── */
+.feat-bar{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem}
+.feat-bar .fn{font-size:.85rem;font-weight:600;width:210px;flex-shrink:0;color:#333}
+.feat-bar-track{flex:1;background:#f0f4fa;border-radius:20px;height:14px;overflow:hidden}
+.feat-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--azul),var(--accent))}
+.feat-bar .fp{font-size:.82rem;font-weight:700;color:var(--azul);width:44px;text-align:right}
+
+/* ── COMO FUNCIONA ────────────────────────────────────────────── */
+.step-row{display:flex;gap:1.2rem;align-items:flex-start;margin-bottom:1.6rem}
+.step-icon{
+  width:48px;height:48px;border-radius:12px;background:var(--azul);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-icon i{color:#fff;font-size:1.1rem}
+.step-text h4{margin-bottom:.3rem}
+.step-text p{font-size:.9rem;color:#555}
+
+/* ── TECNOLOGIAS ──────────────────────────────────────────────── */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+.tech-card{
+  background:var(--white);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1.2rem;
+  display:flex;align-items:center;gap:.9rem;
+  border-left:4px solid var(--azul);transition:transform .2s;
+}
+.tech-card:hover{transform:translateY(-3px)}
+.tech-card i{font-size:1.5rem;color:var(--azul);flex-shrink:0}
+.tech-card .tc-name{font-size:.9rem;font-weight:700;color:var(--azul)}
+.tech-card .tc-uso{font-size:.77rem;color:var(--gris)}
+
+/* ── VALOR / OFERTA ───────────────────────────────────────────── */
+#oferta{background:var(--azul)}
+.oferta-inner{max-width:1060px;margin:0 auto;padding:4rem 24px}
+.oferta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-top:2.5rem}
+.oferta-card{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  border-radius:var(--radius);padding:1.6rem;color:#fff;
+}
+.oferta-card i{font-size:1.8rem;color:var(--accent);margin-bottom:.8rem;display:block}
+.oferta-card h4{font-size:1rem;margin-bottom:.6rem}
+.oferta-card p{font-size:.87rem;opacity:.75;line-height:1.6}
+.oferta-card ul{padding-left:1.2rem;font-size:.87rem;opacity:.75;line-height:1.8}
+
+/* ── CASOS USO ────────────────────────────────────────────────── */
+.caso-card{
+  background:var(--white);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:1.5rem;
+  border-top:3px solid var(--accent);
+}
+.caso-card .caso-icon{font-size:2rem;margin-bottom:.8rem}
+.caso-card h4{margin-bottom:.5rem}
+.caso-card p{font-size:.87rem;color:#555}
+.caso-beneficios{margin-top:.8rem}
+.caso-beneficios span{
+  display:inline-block;background:#e8f4fd;color:#1565c0;
+  font-size:.75rem;font-weight:600;padding:.2rem .6rem;
+  border-radius:12px;margin:.2rem .15rem;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────── */
+footer{
+  background:#060e1e;color:rgba(255,255,255,.5);
+  text-align:center;padding:2rem;font-size:.83rem;
+}
+
+/* ── MISC ─────────────────────────────────────────────────────── */
+.badge{
+  display:inline-block;padding:.2rem .6rem;border-radius:12px;
+  font-size:.74rem;font-weight:700;
+}
+.badge-verde{background:#e8f5e9;color:#2e7d32}
+.badge-rojo{background:#fce4ec;color:#c62828}
+.badge-azul{background:#e3f2fd;color:#1565c0}
+.badge-naranja{background:#fff3e0;color:#e65100}
+
+.nota{
+  background:#fffbf0;border:1px solid #f5e0a0;border-left:4px solid var(--accent);
+  border-radius:8px;padding:.9rem 1.1rem;font-size:.87rem;color:#555;margin-top:1rem;
+}
+.nota strong{color:var(--accent)}
+
+pre{
+  background:#1e2d40;color:#e8f4ff;border-radius:10px;
+  padding:1rem 1.2rem;font-size:.82rem;overflow-x:auto;margin-top:.8rem;
+}
+
+@media(max-width:640px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .feat-bar .fn{width:140px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAVEGACIÓN ───────────────────────────────────────────────── -->
+<nav>
+  <a class="nav-brand" href="#hero">Analítica de Cartera</a>
+  <div class="nav-links">
+    <a href="#problema">Problema</a>
+    <a href="#solucion">Solución</a>
+    <a href="#modulos">Módulos</a>
+    <a href="#resultados">Resultados</a>
+    <a href="#tecnologias">Tecnologías</a>
+    <a href="#oferta">Oferta</a>
+    <a href="#entrega">Entrega</a>
+    <a href="#datos-nuevos">Datos nuevos</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────────── -->
+<div id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Proyecto con Datos Reales</div>
+    <h1>Sistema Analítico de<br>Cartera de Créditos</h1>
+    <p class="sub">Pipeline completo de inteligencia de riesgo crediticio — desde los datos crudos hasta modelos en producción, API REST y dashboard interactivo.</p>
+    <div class="kpi-row">
+      <div class="kpi-chip"><i class="fas fa-database"></i> 124.781 préstamos reales</div>
+      <div class="kpi-chip"><i class="fas fa-bullseye"></i> AUC-ROC 0.9415</div>
+      <div class="kpi-chip"><i class="fas fa-search"></i> 3.744 anomalías detectadas</div>
+      <div class="kpi-chip"><i class="fas fa-layer-group"></i> 8 módulos de análisis</div>
+    </div>
+    <div class="hero-btns">
+      <a href="#modulos" class="btn btn-gold"><i class="fas fa-play"></i> Ver paso a paso</a>
+      <a href="#resultados" class="btn btn-outline"><i class="fas fa-chart-bar"></i> Ver resultados</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── EL PROBLEMA ───────────────────────────────────────────────── -->
+<div id="problema" style="background:var(--white)">
+<div class="problema-wrap">
+  <div class="sec-header">
+    <h2>El problema que resuelve</h2>
+    <div class="sec-line"></div>
+    <p>Toda institución financiera enfrenta estos desafíos con su cartera de créditos</p>
+  </div>
+  <div class="dolor-grid">
+    <div class="dolor-card">
+      <i class="fas fa-eye-slash"></i>
+      <h4>Riesgo no visible</h4>
+      <p>Los préstamos deteriorados se identifican tarde, cuando la mora ya es severa y la recuperación es difícil.</p>
+    </div>
+    <div class="dolor-card">
+      <i class="fas fa-random"></i>
+      <h4>Sin segmentación real</h4>
+      <p>Se aplica la misma gestión a clientes con perfiles muy distintos, desperdiciando recursos de cobranza.</p>
+    </div>
+    <div class="dolor-card">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h4>Anomalías sin detectar</h4>
+      <p>Operaciones con condiciones fuera del patrón (montos, plazos, tasas) pasan sin revisión y esconden riesgos ocultos.</p>
+    </div>
+    <div class="dolor-card">
+      <i class="fas fa-chart-line"></i>
+      <h4>Sin visión de cosechas</h4>
+      <p>No se compara cómo evolucionan las distintas generaciones de préstamos, impidiendo mejorar las políticas de otorgamiento.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:2.5rem;background:#f0f7ff;border-radius:var(--radius);padding:1.8rem 2rem;border-left:5px solid var(--azul2)">
+    <h3 style="margin-bottom:.8rem;color:var(--azul)"><i class="fas fa-lightbulb" style="color:var(--accent);margin-right:.5rem"></i>Este sistema los resuelve todos</h3>
+    <p style="color:#444;font-size:.95rem">Un pipeline de datos reproducible, tres modelos de machine learning entrenados sobre datos reales y un dashboard interactivo que permite actuar antes de que el problema sea irreversible.</p>
+  </div>
+</div>
+</div>
+
+<!-- ── ARQUITECTURA / PIPELINE ──────────────────────────────────── -->
+<div id="solucion" style="background:var(--azul);padding:4rem 1.5rem">
+<div style="max-width:1060px;margin:0 auto">
+  <div class="pipeline-title">
+    <h2 style="color:#fff">Arquitectura del sistema</h2>
+    <p>Del dato crudo al modelo en producción — flujo completo en 8 etapas</p>
+  </div>
+
+  <div class="pipeline-flow">
+
+    <div class="pipe-step">
+      <div class="num">1</div>
+      <i class="fas fa-file-csv"></i>
+      <div class="lbl">Datos crudos<br><small style="opacity:.6">CSV original</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">2</div>
+      <i class="fas fa-broom"></i>
+      <div class="lbl">Limpieza<br><small style="opacity:.6">NB 02</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">3</div>
+      <i class="fas fa-chart-bar"></i>
+      <div class="lbl">Análisis<br>Morosidad<br><small style="opacity:.6">NB 03</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">4</div>
+      <i class="fas fa-object-group"></i>
+      <div class="lbl">Segmentación<br>K-Means<br><small style="opacity:.6">NB 04</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">5</div>
+      <i class="fas fa-brain"></i>
+      <div class="lbl">Modelo<br>Incumplimiento<br><small style="opacity:.6">NB 05</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">6</div>
+      <i class="fas fa-search-plus"></i>
+      <div class="lbl">Detección<br>Anomalías<br><small style="opacity:.6">NB 06</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step">
+      <div class="num">7</div>
+      <i class="fas fa-seedling"></i>
+      <div class="lbl">Análisis<br>Cosechas<br><small style="opacity:.6">NB 08</small></div>
+    </div>
+    <div class="pipe-arrow"><i class="fas fa-chevron-right"></i></div>
+
+    <div class="pipe-step" style="border-color:rgba(200,131,26,.5);background:rgba(200,131,26,.12)">
+      <div class="num" style="background:var(--accent)">8</div>
+      <i class="fas fa-rocket" style="color:#f4c55a"></i>
+      <div class="lbl">API REST +<br>Dashboard<br><small style="opacity:.6">Producción</small></div>
+    </div>
+  </div>
+
+  <!-- Diagrama de capas -->
+  <div style="margin-top:3rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem">
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:1.2rem;text-align:center">
+      <div style="font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:.7rem">Capa de Datos</div>
+      <div style="color:#fff;font-size:.88rem">CSV crudo (124K filas)<br><span style="opacity:.5;font-size:.8rem">cartera_limpia.csv</span></div>
+    </div>
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:1.2rem;text-align:center">
+      <div style="font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:.7rem">Capa de Análisis</div>
+      <div style="color:#fff;font-size:.88rem">8 Jupyter Notebooks<br><span style="opacity:.5;font-size:.8rem">pandas + matplotlib</span></div>
+    </div>
+    <div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:1.2rem;text-align:center">
+      <div style="font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:.7rem">Capa de Modelos</div>
+      <div style="color:#fff;font-size:.88rem">3 modelos ML<br><span style="opacity:.5;font-size:.8rem">sklearn .pkl serializados</span></div>
+    </div>
+    <div style="background:rgba(200,131,26,.15);border:1px solid rgba(200,131,26,.4);border-radius:12px;padding:1.2rem;text-align:center">
+      <div style="font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:#f4c55a;text-transform:uppercase;margin-bottom:.7rem">Capa de Producción</div>
+      <div style="color:#fff;font-size:.88rem">FastAPI + Streamlit<br><span style="opacity:.5;font-size:.8rem">Dockerizable</span></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── MÓDULOS ───────────────────────────────────────────────────── -->
+<section id="modulos">
+  <div class="sec-header">
+    <h2>Módulos del sistema — paso a paso</h2>
+    <div class="sec-line"></div>
+    <p>Cada módulo tiene un propósito claro, entradas definidas y salidas reproducibles</p>
+  </div>
+
+  <!-- MÓDULO 1 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">1</div>
+      <div class="modulo-title">
+        <h3>Exploración inicial de la cartera</h3>
+        <span>Notebook 01 — comprensión del dato crudo</span>
+      </div>
+      <div class="tag-row"><span class="tag tag-py">Python</span><span class="tag tag-nb">Jupyter</span></div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se carga el archivo CSV original con los 124.781 préstamos y se examina la calidad del dato: nulos, distribuciones, rangos, valores atípicos y relaciones entre variables.</p>
+          <ul>
+            <li>Inspección de las 53 columnas disponibles</li>
+            <li>Distribución de variables numéricas clave (monto, plazo, tasa, DDM)</li>
+            <li>Conteo de nulos por variable para planificar la limpieza</li>
+            <li>Identificación de outliers en ingreso mensual y deuda en sistema</li>
+          </ul>
+          <div class="nota"><strong>Concepto:</strong> El <em>DDM</em> (Días de Mora) es el indicador central de incumplimiento. Un DDM &gt; 0 significa que el titular ya tiene cuotas vencidas.</div>
+        </div>
+        <div>
+          <div class="output-box">
+            <div class="out-label">Lo que revela esta exploración</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-file"></i> 124.781 filas × 53 columnas</span>
+              <span class="out-chip"><i class="fas fa-exclamation"></i> 6.148 nulos en ratio_cuota_ingreso</span>
+              <span class="out-chip"><i class="fas fa-calendar"></i> Datos al 30.04.2018</span>
+              <span class="out-chip"><i class="fas fa-building"></i> 63 sucursales distintas</span>
+              <span class="out-chip"><i class="fas fa-tag"></i> 17 tipos de producto</span>
+              <span class="out-chip"><i class="fas fa-briefcase"></i> 5 áreas de negocio</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 2 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">2</div>
+      <div class="modulo-title">
+        <h3>Limpieza y preparación del dato</h3>
+        <span>Notebook 02 — generación de variables derivadas</span>
+      </div>
+      <div class="tag-row"><span class="tag tag-py">Python</span><span class="tag tag-data">Datos reales</span></div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se transforma el dato crudo en un dataset limpio y analizable. Se documentan todos los cambios para que el proceso sea reproducible y auditable.</p>
+          <ul>
+            <li><strong>Fechas:</strong> conversión a datetime, cálculo de <code>edad</code> y <code>antiguedad_meses</code></li>
+            <li><strong>Ingresos:</strong> los ≤ 0 se imputan como nulos (ingreso inválido)</li>
+            <li><strong>DDM:</strong> cap en rango [-365, +730] para eliminar errores de sistema</li>
+            <li><strong>Score:</strong> nulos → 'SIN_SCORE' + variable binaria <code>tiene_scorin</code></li>
+            <li><strong>Riesgo:</strong> nulos → 'SIN_CLASE' para no perder filas</li>
+            <li><strong>Variables creadas:</strong> <code>ratio_cuota_ingreso</code>, <code>tramo_mora</code>, <code>tramo_plazo</code>, <code>en_mora</code>, <code>tramo_antiguedad</code></li>
+          </ul>
+        </div>
+        <div>
+          <div class="metric-highlight">
+            <div>
+              <div class="big">ratio<br>cuota/ingreso</div>
+              <p>Variable derivada más importante:<br>cuota ÷ ingreso mensual.<br>Si supera el 30% → sobreendeudamiento.</p>
+            </div>
+          </div>
+          <div class="output-box" style="margin-top:1rem">
+            <div class="out-label">Salida de este módulo</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-save"></i> cartera_limpia.csv</span>
+              <span class="out-chip"><i class="fas fa-plus"></i> 6 variables nuevas</span>
+              <span class="out-chip"><i class="fas fa-check"></i> 0 nulos críticos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 3 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">3</div>
+      <div class="modulo-title">
+        <h3>Análisis de morosidad y riesgo</h3>
+        <span>Notebook 03 — dónde está el riesgo</span>
+      </div>
+      <div class="tag-row"><span class="tag tag-py">Python</span><span class="tag tag-nb">Visualización</span></div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se analiza en profundidad cómo se distribuye la mora en todos los ejes del negocio. Es el diagnóstico completo de la salud de la cartera.</p>
+          <ul>
+            <li>Distribución por tramos de mora (0–30, 31–60, 61–90, 90+ días)</li>
+            <li>Heatmap mora × categoría regulatoria × calificación interna</li>
+            <li>Mora por producto, área de negocio y ocupación del titular</li>
+            <li>Análisis de ratio cuota/ingreso: ¿los sobreendeudados caen más en mora?</li>
+            <li><strong>Ranking de sucursales críticas</strong> por mora + saldo expuesto</li>
+            <li><strong>Curva de vida del préstamo:</strong> ¿en qué mes se rompe el pago?</li>
+            <li>Perfil comparativo: cliente sano vs cliente en riesgo alto (califi ≥ 3)</li>
+          </ul>
+          <div class="nota"><strong>Hallazgo clave:</strong> El pico de mora ocurre en el <strong>mes 26</strong> de vida del préstamo con 76.5% — los créditos que sobreviven más de 2 años se vuelven muy riesgosos si no se gestionan antes.</div>
+        </div>
+        <div>
+          <div class="card" style="background:#fff5f5;border-left:4px solid var(--rojo)">
+            <h4 style="color:var(--rojo);margin-bottom:.8rem"><i class="fas fa-fire-alt"></i> Estado de la cartera al corte</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+              <div style="text-align:center;padding:.6rem;background:#fff;border-radius:8px">
+                <div style="font-size:1.6rem;font-weight:800;color:var(--rojo)">28.4%</div>
+                <div style="font-size:.75rem;color:#777">Mora global</div>
+              </div>
+              <div style="text-align:center;padding:.6rem;background:#fff;border-radius:8px">
+                <div style="font-size:1.6rem;font-weight:800;color:var(--rojo)">8.9%</div>
+                <div style="font-size:.75rem;color:#777">Mora &gt; 90 días</div>
+              </div>
+              <div style="text-align:center;padding:.6rem;background:#fff;border-radius:8px">
+                <div style="font-size:1.6rem;font-weight:800;color:var(--azul)">10.7%</div>
+                <div style="font-size:.75rem;color:#777">Califi alta (≥3)</div>
+              </div>
+              <div style="text-align:center;padding:.6rem;background:#fff;border-radius:8px">
+                <div style="font-size:1.6rem;font-weight:800;color:var(--naranja)">Gs. 552 MM</div>
+                <div style="font-size:.75rem;color:#777">Saldo expuesto</div>
+              </div>
+            </div>
+          </div>
+          <div class="output-box" style="margin-top:1rem">
+            <div class="out-label">Salida de este módulo</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-image"></i> 8 gráficos profesionales</span>
+              <span class="out-chip"><i class="fas fa-list"></i> Ranking sucursales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 4 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">4</div>
+      <div class="modulo-title">
+        <h3>Segmentación de deudores — K-Means</h3>
+        <span>Notebook 04 — agrupar para gestionar mejor</span>
+      </div>
+      <div class="tag-row"><span class="tag tag-ml">Machine Learning</span><span class="tag tag-py">scikit-learn</span></div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> El algoritmo K-Means agrupa automáticamente los 124.781 préstamos en segmentos con características similares, sin necesidad de etiquetar los datos manualmente.</p>
+          <p><strong>¿Por qué K-Means?</strong> Es el estándar en segmentación de cartera crediticia: rápido, interpretable y permite actualizar los segmentos cuando ingresan nuevos datos.</p>
+          <ul>
+            <li>Variables de segmentación: DDM, calificación, ratio cuota/ingreso, monto, plazo, antigüedad, saldo</li>
+            <li>Escalado con StandardScaler para equilibrar unidades</li>
+            <li>Método del Codo + Silhouette Score para elegir K óptimo</li>
+            <li>Visualización en 2D con PCA (Análisis de Componentes Principales)</li>
+            <li>Asignación de etiquetas de negocio a cada cluster</li>
+          </ul>
+          <div class="nota"><strong>Concepto:</strong> El <em>Silhouette Score</em> mide qué tan bien separados están los grupos (0 a 1). Un valor de <strong>0.93</strong> indica separación casi perfecta.</div>
+        </div>
+        <div>
+          <div class="card" style="border-left:4px solid #7b1fa2">
+            <h4 style="color:#7b1fa2;margin-bottom:1rem"><i class="fas fa-sitemap"></i> Los segmentos y sus acciones</h4>
+            <div style="display:flex;flex-direction:column;gap:.6rem">
+              <div style="display:flex;align-items:center;gap:.7rem;padding:.5rem;background:#f3e5f5;border-radius:8px">
+                <span style="font-size:1.2rem">🟢</span>
+                <div><div style="font-weight:700;font-size:.85rem">PREMIUM</div><div style="font-size:.77rem;color:#555">Sin mora · Cross-sell · Fidelización</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.7rem;padding:.5rem;background:#e8f5e9;border-radius:8px">
+                <span style="font-size:1.2rem">🔵</span>
+                <div><div style="font-weight:700;font-size:.85rem">ESTÁNDAR</div><div style="font-size:.77rem;color:#555">Mora mínima · Mantenimiento rutinario</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.7rem;padding:.5rem;background:#fff3e0;border-radius:8px">
+                <span style="font-size:1.2rem">🟡</span>
+                <div><div style="font-weight:700;font-size:.85rem">SEGUIMIENTO</div><div style="font-size:.77rem;color:#555">Mora moderada · Contacto preventivo</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.7rem;padding:.5rem;background:#fce4ec;border-radius:8px">
+                <span style="font-size:1.2rem">🔴</span>
+                <div><div style="font-weight:700;font-size:.85rem">CRÍTICO</div><div style="font-size:.77rem;color:#555">Mora grave · Negociación urgente</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="output-box" style="margin-top:1rem">
+            <div class="out-label">Salida de este módulo</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-save"></i> cartera_segmentada.csv</span>
+              <span class="out-chip"><i class="fas fa-robot"></i> kmeans_deudores.pkl</span>
+              <span class="out-chip"><i class="fas fa-star"></i> Silhouette: 0.9292</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 5 -->
+  <div class="modulo" style="border-top:3px solid var(--accent)">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:var(--accent)">5</div>
+      <div class="modulo-title">
+        <h3>Modelo predictivo de incumplimiento</h3>
+        <span>Notebook 05 — el corazón del sistema</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag tag-ml">Gradient Boosting</span>
+        <span class="tag tag-py">scikit-learn</span>
+        <span class="badge badge-verde">AUC 0.9415</span>
+      </div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se entrena un modelo de Gradient Boosting para predecir qué préstamos caerán en incumplimiento (calificación ≥ 3) antes de que ocurra. Es el módulo más valioso del sistema.</p>
+          <p><strong>¿Cómo funciona el Gradient Boosting?</strong> Es un ensamble de árboles de decisión donde cada árbol corrige los errores del anterior. Es el algoritmo estándar de la industria para scoring crediticio.</p>
+          <ul>
+            <li><strong>Variable objetivo:</strong> <code>califi >= 3</code> (sin data leakage: no usa DDM ni en_mora)</li>
+            <li><strong>Pipeline sklearn:</strong> imputa nulos → escala → codifica categorías → modelo</li>
+            <li><strong>Validación cruzada:</strong> 5 folds estratificados (AUC media: 0.9409 ± 0.0024)</li>
+            <li><strong>Umbral ajustado:</strong> 0.32 (optimizado por costo, no por defecto 0.5)</li>
+            <li>Comparado contra Regresión Logística (AUC base)</li>
+          </ul>
+
+          <h4 style="margin-top:1.2rem;margin-bottom:.8rem">Variables más influyentes en el modelo:</h4>
+          <div class="feat-bar"><div class="fn">Meses desde originación</div><div class="feat-bar-track"><div class="feat-bar-fill" style="width:80%"></div></div><div class="fp">24.3%</div></div>
+          <div class="feat-bar"><div class="fn">Tasa de interés BCP</div><div class="feat-bar-track"><div class="feat-bar-fill" style="width:61%"></div></div><div class="fp">18.6%</div></div>
+          <div class="feat-bar"><div class="fn">Saldo capital actual</div><div class="feat-bar-track"><div class="feat-bar-fill" style="width:54%"></div></div><div class="fp">16.4%</div></div>
+          <div class="feat-bar"><div class="fn">Plazo (meses)</div><div class="feat-bar-track"><div class="feat-bar-fill" style="width:28%"></div></div><div class="fp">8.4%</div></div>
+          <div class="feat-bar"><div class="fn">Valor de cuota</div><div class="feat-bar-track"><div class="feat-bar-fill" style="width:23%"></div></div><div class="fp">7.1%</div></div>
+        </div>
+        <div>
+          <div class="card" style="background:linear-gradient(135deg,#0D2347,#1A4A8A);color:#fff">
+            <h4 style="color:#f4c55a;margin-bottom:1rem">Métricas del modelo en datos de prueba</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+              <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:.9rem;text-align:center">
+                <div style="font-size:2rem;font-weight:800;color:#f4c55a">0.9415</div>
+                <div style="font-size:.77rem;opacity:.7">AUC-ROC (test)</div>
+              </div>
+              <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:.9rem;text-align:center">
+                <div style="font-size:2rem;font-weight:800;color:#f4c55a">0.7567</div>
+                <div style="font-size:.77rem;opacity:.7">Avg. Precision</div>
+              </div>
+              <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:.9rem;text-align:center">
+                <div style="font-size:2rem;font-weight:800;color:#f4c55a">0.9409</div>
+                <div style="font-size:.77rem;opacity:.7">CV AUC media</div>
+              </div>
+              <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:.9rem;text-align:center">
+                <div style="font-size:2rem;font-weight:800;color:#f4c55a">±0.0024</div>
+                <div style="font-size:.77rem;opacity:.7">Desv. estándar CV</div>
+              </div>
+            </div>
+            <div style="margin-top:1rem;font-size:.83rem;opacity:.7;line-height:1.6">
+              Train: 99.824 préstamos (80%) &nbsp;|&nbsp; Test: 24.957 (20%)<br>
+              Estratificado por clase para manejar el desbalance
+            </div>
+          </div>
+          <div class="nota" style="margin-top:1rem">
+            <strong>¿Qué significa AUC-ROC 0.9415?</strong> Un modelo aleatorio tiene AUC = 0.5. Un modelo perfecto tiene AUC = 1.0. Con <strong>0.9415</strong> el modelo ordena correctamente el 94% de los pares (riesgo alto / riesgo bajo) — rendimiento de calidad industrial.
+          </div>
+          <div class="output-box" style="margin-top:1rem">
+            <div class="out-label">Salida de este módulo</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-robot"></i> gb_incumplimiento.pkl</span>
+              <span class="out-chip"><i class="fas fa-file-alt"></i> meta_incumplimiento.json</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 6 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">6</div>
+      <div class="modulo-title">
+        <h3>Detección de anomalías — IsolationForest</h3>
+        <span>Notebook 06 — operaciones fuera del patrón</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag tag-ml">No supervisado</span>
+        <span class="tag tag-py">IsolationForest</span>
+      </div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se entrena un detector no supervisado para identificar préstamos cuyas condiciones financieras (monto, tasa, plazo, ingreso) se alejan del patrón habitual de la cartera.</p>
+          <p><strong>¿Cómo funciona el IsolationForest?</strong> Construye árboles aleatorios que "aíslan" cada punto. Las anomalías se aíslan con menos cortes porque son raras y extremas. No necesita datos etiquetados.</p>
+          <ul>
+            <li>10 variables financieras sin información de mora (para evitar circular reasoning)</li>
+            <li>300 árboles, contaminación calibrada al 3%</li>
+            <li>Validación cruzada: las anomalías coinciden con calificaciones altas</li>
+            <li>Score exportado por préstamo para revisión humana</li>
+          </ul>
+          <div class="nota"><strong>Uso típico:</strong> Detectar préstamos con tasa anormalmente alta para el cliente, o montos que no corresponden al perfil de ingreso — posibles errores de originación o situaciones de riesgo oculto.</div>
+        </div>
+        <div>
+          <div class="card" style="border-left:4px solid var(--morado,#7b1fa2)">
+            <h4 style="margin-bottom:1rem"><i class="fas fa-search-plus" style="color:#7b1fa2"></i> Resultado de la calibración</h4>
+            <div style="display:flex;flex-direction:column;gap:.7rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:#f8f0ff;border-radius:8px">
+                <span style="font-size:.87rem">Préstamos analizados</span>
+                <strong>124.781</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:#f8f0ff;border-radius:8px">
+                <span style="font-size:.87rem">Anomalías detectadas</span>
+                <strong style="color:#7b1fa2">3.744 (3.0%)</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:#f8f0ff;border-radius:8px">
+                <span style="font-size:.87rem">Score mínimo (más anómalo)</span>
+                <strong>-0.8118</strong>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:#f8f0ff;border-radius:8px">
+                <span style="font-size:.87rem">Score máximo (más normal)</span>
+                <strong>-0.3427</strong>
+              </div>
+            </div>
+          </div>
+          <div class="output-box" style="margin-top:1rem">
+            <div class="out-label">Salida de este módulo</div>
+            <div class="output-row">
+              <span class="out-chip"><i class="fas fa-robot"></i> isoforest_anomalias.pkl</span>
+              <span class="out-chip"><i class="fas fa-file-csv"></i> anomalias_para_revision.csv</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 7 -->
+  <div class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num">7</div>
+      <div class="modulo-title">
+        <h3>Análisis de cosechas (Vintage Analysis)</h3>
+        <span>Notebook 08 — ¿mejora o empeora la calidad de originación?</span>
+      </div>
+      <div class="tag-row"><span class="tag tag-py">Python</span><span class="tag tag-nb">scipy</span></div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué se hace?</strong> Se agrupa cada préstamo por su año/trimestre de originación (cosecha) y se analiza cómo evoluciona la mora a lo largo de su vida. Es la técnica estándar en banca para evaluar la calidad de las políticas de crédito a lo largo del tiempo.</p>
+          <ul>
+            <li>Curvas vintage por año y trimestre de originación</li>
+            <li>Indicador de mora a 12 meses (ventana comparable entre cosechas)</li>
+            <li>Heatmap cosecha × mes de vida</li>
+            <li>Detección automática de tendencia (DETERIORO / MEJORA / ESTABLE) con regresión lineal</li>
+          </ul>
+          <div class="nota"><strong>Interpretación:</strong> Las cosechas 2015–2016 tienen mora del 60.7% y 55.4% — las más riesgosas. Las de 2017–2018 parecen sanas pero están inmaduras (los préstamos son jóvenes al corte).</div>
+        </div>
+        <div>
+          <div class="card">
+            <h4 style="margin-bottom:.8rem"><i class="fas fa-calendar-alt" style="color:var(--accent)"></i> Cosechas por año de originación</h4>
+            <div style="overflow-x:auto">
+              <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+                <thead>
+                  <tr style="background:#f0f4fa;font-weight:700">
+                    <th style="padding:.4rem .6rem;text-align:left">Cosecha</th>
+                    <th style="padding:.4rem .6rem;text-align:right">Préstamos</th>
+                    <th style="padding:.4rem .6rem;text-align:right">% Mora</th>
+                    <th style="padding:.4rem .6rem;text-align:center">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td style="padding:.3rem .6rem">2014</td><td style="text-align:right">99</td><td style="text-align:right;font-weight:700;color:var(--rojo)">42.4%</td><td style="text-align:center"><span class="badge badge-rojo">CRÍTICA</span></td></tr>
+                  <tr style="background:#fafafa"><td style="padding:.3rem .6rem">2015</td><td style="text-align:right">621</td><td style="text-align:right;font-weight:700;color:var(--rojo)">60.7%</td><td style="text-align:center"><span class="badge badge-rojo">CRÍTICA</span></td></tr>
+                  <tr><td style="padding:.3rem .6rem">2016</td><td style="text-align:right">8.338</td><td style="text-align:right;font-weight:700;color:var(--rojo)">55.4%</td><td style="text-align:center"><span class="badge badge-rojo">CRÍTICA</span></td></tr>
+                  <tr style="background:#fafafa"><td style="padding:.3rem .6rem">2017</td><td style="text-align:right">74.901</td><td style="text-align:right;font-weight:700;color:var(--naranja)">34.3%</td><td style="text-align:center"><span class="badge badge-naranja">VIGILAR</span></td></tr>
+                  <tr><td style="padding:.3rem .6rem">2018</td><td style="text-align:right">40.699</td><td style="text-align:right;font-weight:700;color:var(--verde)">11.5%</td><td style="text-align:center"><span class="badge badge-verde">INMADURA</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÓDULO 8 -->
+  <div class="modulo" style="border-top:3px solid var(--accent)">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:var(--accent)">8</div>
+      <div class="modulo-title">
+        <h3>API REST + Dashboard interactivo</h3>
+        <span>Producción — scoring en tiempo real y análisis visual</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag tag-api">FastAPI</span>
+        <span class="tag tag-api">Streamlit</span>
+        <span class="tag tag-py">Docker</span>
+      </div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <h4 style="margin-bottom:.8rem">API REST — FastAPI</h4>
+          <p>Los modelos entrenados se sirven como endpoints HTTP. Cualquier sistema externo (core bancario, CRM, Excel) puede consultar el riesgo de un préstamo en tiempo real.</p>
+          <div style="margin:.8rem 0">
+            <div style="display:flex;flex-direction:column;gap:.4rem">
+              <div style="background:#f0f4fa;border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.82rem">
+                <span style="color:var(--verde);font-weight:700">POST</span> /predecir/incumplimiento
+              </div>
+              <div style="background:#f0f4fa;border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.82rem">
+                <span style="color:var(--naranja);font-weight:700">POST</span> /alertas/cartera
+              </div>
+              <div style="background:#f0f4fa;border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.82rem">
+                <span style="color:#9c27b0;font-weight:700">POST</span> /evaluar/prestamo
+              </div>
+              <div style="background:#f0f4fa;border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.82rem">
+                <span style="color:var(--azul2);font-weight:700">GET</span> &nbsp; /cartera/resumen
+              </div>
+              <div style="background:#f0f4fa;border-radius:8px;padding:.5rem .8rem;font-family:'JetBrains Mono',monospace;font-size:.82rem">
+                <span style="color:var(--azul2);font-weight:700">GET</span> &nbsp; /modelos/info
+              </div>
+            </div>
+          </div>
+          <pre>{"probabilidad_incumplimiento": 0.2094,
+ "nivel_riesgo": "bajo",
+ "accion_recomendada": "...",
+ "umbral_usado": 0.45}</pre>
+        </div>
+        <div>
+          <h4 style="margin-bottom:.8rem">Dashboard Streamlit — 3 páginas</h4>
+          <div style="display:flex;flex-direction:column;gap:.7rem">
+            <div class="step-row">
+              <div class="step-icon"><i class="fas fa-chart-pie"></i></div>
+              <div class="step-text">
+                <h4>Portada — KPIs globales</h4>
+                <p>Métricas de la cartera en tiempo real + métricas de los modelos entrenados. Estado del sistema de un vistazo.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-icon"><i class="fas fa-filter"></i></div>
+              <div class="step-text">
+                <h4>Cartera — análisis completo</h4>
+                <p>Filtros por área, riesgo y calificación. Tabs: morosidad, sucursales, segmentos. Descargas CSV.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-icon"><i class="fas fa-crosshairs"></i></div>
+              <div class="step-text">
+                <h4>Predictor — evaluación en tiempo real</h4>
+                <p>Formulario interactivo: ingresás los datos de un préstamo y obtenés la probabilidad de incumplimiento, detección de anomalía y alerta global — sin necesitar la API.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ── RESULTADOS ────────────────────────────────────────────────── -->
+<div style="background:var(--white)">
+<section id="resultados">
+  <div class="sec-header">
+    <h2>Resultados obtenidos con datos reales</h2>
+    <div class="sec-line"></div>
+    <p>Métricas verificables — no son simulaciones ni datos sintéticos</p>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:2rem">
+    <div class="result-card">
+      <div class="big-num">0.9415</div>
+      <div class="lbl">AUC-ROC del modelo</div>
+      <div class="detail">Rendimiento industrial en scoring crediticio. La industria considera ≥ 0.80 como "bueno".</div>
+    </div>
+    <div class="result-card">
+      <div class="big-num">3.744</div>
+      <div class="lbl">Anomalías detectadas</div>
+      <div class="detail">Préstamos con condiciones financieras fuera del patrón histórico de la cartera.</div>
+    </div>
+    <div class="result-card">
+      <div class="big-num">0.9409</div>
+      <div class="lbl">AUC validación cruzada</div>
+      <div class="detail">±0.0024 en 5 folds. El modelo generaliza bien — no es overfitting.</div>
+    </div>
+    <div class="result-card">
+      <div class="big-num">124.781</div>
+      <div class="lbl">Préstamos procesados</div>
+      <div class="detail">Cartera real completa. Corte 30.04.2018 — 63 sucursales, 17 productos, 5 áreas.</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3 style="margin-bottom:1.2rem"><i class="fas fa-exclamation-circle" style="color:var(--rojo);margin-right:.5rem"></i>Lo que el sistema detectó</h3>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div style="padding:.7rem;border-radius:8px;background:#fff5f5;border-left:3px solid var(--rojo)">
+          <div style="font-weight:700;font-size:.9rem">28.4% de mora global</div>
+          <div style="font-size:.82rem;color:#555">35.471 préstamos con algún grado de incumplimiento al corte</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#fff5f5;border-left:3px solid var(--rojo)">
+          <div style="font-weight:700;font-size:.9rem">Mes 26 — pico de riesgo</div>
+          <div style="font-size:.82rem;color:#555">76.5% de mora en préstamos con 26 meses de vida. Alerta temprana antes del mes 20.</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#fff3e0;border-left:3px solid var(--naranja)">
+          <div style="font-weight:700;font-size:.9rem">Cosechas 2015-2016 críticas</div>
+          <div style="font-size:.82rem;color:#555">60.7% y 55.4% de mora — reflejan una política de originación que debió revisarse.</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#fff3e0;border-left:3px solid var(--naranja)">
+          <div style="font-weight:700;font-size:.9rem">Ratio cuota/ingreso &gt; 30% = más mora</div>
+          <div style="font-size:.82rem;color:#555">El sobreendeudamiento del titular es el principal predictor de incumplimiento.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:1.2rem"><i class="fas fa-check-circle" style="color:var(--verde);margin-right:.5rem"></i>Lo que el sistema permite hacer</h3>
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+        <div style="padding:.7rem;border-radius:8px;background:#e8f5e9;border-left:3px solid var(--verde)">
+          <div style="font-weight:700;font-size:.9rem">Alerta temprana automática</div>
+          <div style="font-size:.82rem;color:#555">Identificar préstamos de alto riesgo antes del mes 15 — cuando aún se puede reestructurar.</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#e8f5e9;border-left:3px solid var(--verde)">
+          <div style="font-weight:700;font-size:.9rem">Scoring de nuevas solicitudes</div>
+          <div style="font-size:.82rem;color:#555">La API devuelve la probabilidad de incumplimiento en &lt; 200ms para integrar en el proceso de aprobación.</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#e8f5e9;border-left:3px solid var(--verde)">
+          <div style="font-weight:700;font-size:.9rem">Priorización de gestión de cobranza</div>
+          <div style="font-size:.82rem;color:#555">Los segmentos K-Means guían qué clientes necesitan llamada urgente, preventiva o solo monitoreo.</div>
+        </div>
+        <div style="padding:.7rem;border-radius:8px;background:#e8f5e9;border-left:3px solid var(--verde)">
+          <div style="font-weight:700;font-size:.9rem">Revisión de anomalías</div>
+          <div style="font-size:.82rem;color:#555">Lista de 3.744 préstamos para auditoría interna — posibles errores de originación o irregularidades.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ── TECNOLOGÍAS ───────────────────────────────────────────────── -->
+<section id="tecnologias">
+  <div class="sec-header">
+    <h2>Stack tecnológico</h2>
+    <div class="sec-line"></div>
+    <p>Herramientas de código abierto, estándar de la industria, sin costos de licencia</p>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <i class="fab fa-python"></i>
+      <div><div class="tc-name">Python 3.11+</div><div class="tc-uso">Lenguaje base del sistema</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#e65100">
+      <i class="fas fa-table" style="color:#e65100"></i>
+      <div><div class="tc-name">pandas + numpy</div><div class="tc-uso">Manipulación de datos</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#2e7d32">
+      <i class="fas fa-brain" style="color:#2e7d32"></i>
+      <div><div class="tc-name">scikit-learn</div><div class="tc-uso">Pipeline ML completo</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#7b1fa2">
+      <i class="fas fa-rocket" style="color:#7b1fa2"></i>
+      <div><div class="tc-name">FastAPI</div><div class="tc-uso">API REST de producción</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#c62828">
+      <i class="fas fa-tachometer-alt" style="color:#c62828"></i>
+      <div><div class="tc-name">Streamlit</div><div class="tc-uso">Dashboard interactivo</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#1565c0">
+      <i class="fas fa-book-open" style="color:#1565c0"></i>
+      <div><div class="tc-name">Jupyter Lab</div><div class="tc-uso">Pipeline reproducible</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#0097a7">
+      <i class="fas fa-chart-area" style="color:#0097a7"></i>
+      <div><div class="tc-name">matplotlib + seaborn</div><div class="tc-uso">Visualizaciones</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#e65100">
+      <i class="fas fa-flask" style="color:#e65100"></i>
+      <div><div class="tc-name">scipy</div><div class="tc-uso">Estadística y tendencias</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#455a64">
+      <i class="fab fa-docker" style="color:#455a64"></i>
+      <div><div class="tc-name">Docker</div><div class="tc-uso">Empaquetado y deploy</div></div>
+    </div>
+    <div class="tech-card" style="border-left-color:#2e7d32">
+      <i class="fas fa-check-double" style="color:#2e7d32"></i>
+      <div><div class="tc-name">Pydantic</div><div class="tc-uso">Validación de datos API</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CASOS DE USO ───────────────────────────────────────────────── -->
+<div style="background:var(--white)">
+<section id="casos" style="background:transparent">
+  <div class="sec-header">
+    <h2>¿Para quién es este sistema?</h2>
+    <div class="sec-line"></div>
+    <p>Tres perfiles de cliente que se benefician directamente</p>
+  </div>
+  <div class="grid-3">
+    <div class="caso-card">
+      <div class="caso-icon">🏦</div>
+      <h4>Banco o financiera</h4>
+      <p>Scoring automático de nuevas solicitudes integrado en el proceso de aprobación. Alertas tempranas que disparan gestión preventiva antes de la mora severa.</p>
+      <div class="caso-beneficios">
+        <span>Reducción de mora</span>
+        <span>Scoring automático</span>
+        <span>API integrable</span>
+      </div>
+    </div>
+    <div class="caso-card">
+      <div class="caso-icon">🤝</div>
+      <h4>Cooperativa de crédito</h4>
+      <p>Segmentación inteligente de socios para gestión diferenciada. Dashboard simple que no requiere conocimientos técnicos del equipo operativo.</p>
+      <div class="caso-beneficios">
+        <span>Segmentación socios</span>
+        <span>Dashboard simple</span>
+        <span>Sin IT complejo</span>
+      </div>
+    </div>
+    <div class="caso-card">
+      <div class="caso-icon">📊</div>
+      <h4>Área de Riesgos</h4>
+      <p>Reporte ejecutivo automatizado con 29 gráficos. Análisis de cosechas para evaluar la calidad histórica de las políticas de otorgamiento.</p>
+      <div class="caso-beneficios">
+        <span>Reporte automático</span>
+        <span>Análisis cosechas</span>
+        <span>Detección anomalías</span>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- ── OFERTA CONSULTORA ───────────────────────────────────────────── -->
+<div id="oferta">
+<div class="oferta-inner">
+  <div style="text-align:center;margin-bottom:2.5rem">
+    <h2 style="color:#fff;font-size:clamp(1.5rem,3vw,2.1rem)">Lo que puedo implementar para tu institución</h2>
+    <p style="color:rgba(255,255,255,.55);margin-top:.5rem">Servicio de consultoría — adaptado a tus datos y procesos</p>
+    <div style="width:52px;height:4px;background:var(--accent);border-radius:2px;margin:.8rem auto 0"></div>
+  </div>
+  <div class="oferta-grid">
+    <div class="oferta-card">
+      <i class="fas fa-database"></i>
+      <h4>Diagnóstico de cartera</h4>
+      <p>Análisis completo de tu portafolio: distribución de mora, segmentos de riesgo, sucursales críticas y calidad de datos. Entregable: reporte HTML ejecutivo.</p>
+      <ul>
+        <li>Exploración y limpieza de datos</li>
+        <li>8 análisis de morosidad</li>
+        <li>Reporte ejecutivo PDF/HTML</li>
+        <li>Presentación de hallazgos</li>
+      </ul>
+    </div>
+    <div class="oferta-card">
+      <i class="fas fa-brain"></i>
+      <h4>Modelo de scoring</h4>
+      <p>Desarrollo del modelo predictivo calibrado sobre tus datos históricos. Incluye pipeline completo, validación y documentación del umbral óptimo.</p>
+      <ul>
+        <li>Pipeline sklearn reproducible</li>
+        <li>Modelo GradientBoosting</li>
+        <li>Validación cruzada rigurosa</li>
+        <li>Documentación técnica</li>
+      </ul>
+    </div>
+    <div class="oferta-card">
+      <i class="fas fa-rocket"></i>
+      <h4>Sistema en producción</h4>
+      <p>API REST + dashboard interactivo desplegado en tu infraestructura. Integrable con core bancario, CRM o cualquier sistema que haga peticiones HTTP.</p>
+      <ul>
+        <li>FastAPI dockerizada</li>
+        <li>Dashboard Streamlit</li>
+        <li>Documentación Swagger</li>
+        <li>Capacitación al equipo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:1.8rem 2rem;text-align:center">
+    <h3 style="color:#f4c55a;margin-bottom:.6rem">¿Tenés los datos, yo tengo la metodología</h3>
+    <p style="color:rgba(255,255,255,.6);font-size:.95rem;max-width:600px;margin:0 auto">Esta solución fue desarrollada y validada sobre 124.781 préstamos reales. El mismo pipeline se adapta a cualquier cartera crediticia — bancaria, cooperativa o fintech.</p>
+  </div>
+</div>
+</div>
+
+<!-- ── ENTREGA AL CLIENTE ──────────────────────────────────────────── -->
+<section id="entrega">
+  <div class="sec-header">
+    <h2>¿Cómo se entrega al cliente?</h2>
+    <div class="sec-line"></div>
+    <p>Tres opciones según el perfil técnico del cliente — de la más simple a la más robusta</p>
+  </div>
+
+  <!-- OPCIÓN 1 -->
+  <div class="modulo" style="border-top:3px solid var(--verde)">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:var(--verde)">A</div>
+      <div class="modulo-title">
+        <h3>ZIP del proyecto — cliente con Docker instalado</h3>
+        <span>La más simple · Un solo comando · 15 minutos de instalación</span>
+      </div>
+      <span class="badge badge-verde">Recomendada para IT interna</span>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué recibe el cliente?</strong> Una carpeta comprimida con todo el proyecto listo para correr. Los modelos ya están entrenados — no necesita datos históricos para empezar.</p>
+
+          <div style="background:#f8fafe;border-radius:10px;padding:1rem 1.2rem;margin:.8rem 0">
+            <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;color:var(--gris);text-transform:uppercase;margin-bottom:.6rem">Contenido del ZIP entregado</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.8;color:#444">
+              cartera_analitica_v1.zip<br>
+              &nbsp;├── api/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gris)">← API REST lista</span><br>
+              &nbsp;├── dashboard/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gris)">← Dashboard Streamlit</span><br>
+              &nbsp;├── modelos/entrenados/ &nbsp;<span style="color:var(--verde);font-weight:700">← .pkl ya entrenados</span><br>
+              &nbsp;├── data/procesada/ &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--gris)">← CSVs procesados</span><br>
+              &nbsp;├── Dockerfile<br>
+              &nbsp;├── docker-compose.yml<br>
+              &nbsp;└── README.md
+            </div>
+          </div>
+
+          <div class="nota"><strong>Clave:</strong> Los modelos .pkl ya están entrenados y dentro del ZIP. El cliente no necesita datos históricos para arrancar. Puede evaluar préstamos nuevos desde el primer minuto.</div>
+        </div>
+        <div>
+          <p><strong>Lo que hace el cliente (una sola vez):</strong></p>
+          <div style="display:flex;flex-direction:column;gap:.7rem;margin-top:.5rem">
+            <div class="step-row">
+              <div class="step-icon" style="background:var(--verde)"><i class="fab fa-docker"></i></div>
+              <div class="step-text">
+                <h4>Paso 1 — Instalar Docker Desktop</h4>
+                <p>Descarga gratuita de docker.com. Disponible para Windows, Mac y Linux. Instalación de 5 minutos.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-icon" style="background:var(--verde)"><i class="fas fa-folder-open"></i></div>
+              <div class="step-text">
+                <h4>Paso 2 — Descomprimir el ZIP</h4>
+                <p>Extraer en cualquier carpeta del servidor o computadora donde vaya a correr.</p>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-icon" style="background:var(--verde)"><i class="fas fa-terminal"></i></div>
+              <div class="step-text">
+                <h4>Paso 3 — Un solo comando</h4>
+                <pre style="margin:0;font-size:.8rem">docker-compose up --build</pre>
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-icon" style="background:var(--verde)"><i class="fas fa-check-circle"></i></div>
+              <div class="step-text">
+                <h4>Resultado en 3–5 minutos</h4>
+                <p>API disponible en <code>http://localhost:8000/docs</code><br>Dashboard en <code>http://localhost:8501</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN 2 -->
+  <div class="modulo" style="border-top:3px solid var(--accent)">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:var(--accent)">B</div>
+      <div class="modulo-title">
+        <h3>Imagen Docker pre-construida — cliente sin conocimientos técnicos</h3>
+        <span>Enchufar y correr · El cliente solo carga el archivo · Sin instalación de Python</span>
+      </div>
+      <span class="badge badge-naranja">Sin IT requerido</span>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Qué es una imagen Docker?</strong> Es como un appliance — una caja sellada que contiene el sistema operativo, Python, todas las librerías y el código, todo junto. El cliente solo necesita Docker instalado.</p>
+          <p>No importa si el servidor del cliente tiene Windows Server, Ubuntu o cualquier otro sistema — la imagen corre igual en todos.</p>
+
+          <div class="nota" style="margin-top:1rem">
+            <strong>Analogía:</strong> Es como entregarle un pendrive con el sistema ya instalado. El cliente lo conecta y ya funciona, sin saber nada de Python ni de librerías.
+          </div>
+
+          <div style="margin-top:1rem">
+            <div style="font-size:.82rem;font-weight:700;color:var(--gris);margin-bottom:.5rem">TAMAÑO DEL ARCHIVO A ENTREGAR</div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+              <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:.5rem .8rem;text-align:center">
+                <div style="font-size:1.1rem;font-weight:800;color:var(--naranja)">~800 MB</div>
+                <div style="font-size:.75rem;color:#777">imagen comprimida</div>
+              </div>
+              <div style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:.5rem .8rem;text-align:center">
+                <div style="font-size:1.1rem;font-weight:800;color:var(--naranja)">USB / Drive</div>
+                <div style="font-size:.75rem;color:#777">medio de entrega</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p><strong>Proceso completo — vos hacés en tu máquina:</strong></p>
+          <pre>
+# 1. Construir la imagen (una vez, ~5 min)
+docker build -t cartera-analitica:v1 .
+
+# 2. Exportar como archivo .tar.gz
+docker save cartera-analitica:v1 | gzip \
+  > cartera-analitica-v1.tar.gz
+
+# 3. Entregar por USB, Google Drive o servidor FTP</pre>
+
+          <p style="margin-top:1rem"><strong>El cliente hace en su máquina:</strong></p>
+          <pre>
+# 1. Cargar la imagen (una vez)
+docker load &lt; cartera-analitica-v1.tar.gz
+
+# 2. Correr el sistema
+docker run -p 8000:8000 -p 8501:8501 \
+  cartera-analitica:v1</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPCIÓN 3 -->
+  <div class="modulo" style="border-top:3px solid #7b1fa2">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:#7b1fa2">C</div>
+      <div class="modulo-title">
+        <h3>Despliegue en la nube — acceso remoto desde el navegador</h3>
+        <span>El cliente no instala nada · Accede con una URL · Siempre actualizado</span>
+      </div>
+      <span class="badge badge-azul">Máxima comodidad</span>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p><strong>¿Cómo funciona?</strong> El sistema se despliega en un servidor en la nube. El cliente accede al dashboard desde su navegador con una URL, sin instalar absolutamente nada.</p>
+          <p>Ideal para instituciones sin área de IT o que quieren acceso desde múltiples dispositivos y ubicaciones.</p>
+
+          <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.6rem">
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.6rem;background:#f3e5f5;border-radius:8px">
+              <span style="font-size:1.3rem">🚂</span>
+              <div>
+                <div style="font-weight:700;font-size:.88rem">Railway</div>
+                <div style="font-size:.78rem;color:#555">~5 USD/mes · Deploy con un click desde GitHub · El más sencillo</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.6rem;background:#e8f5e9;border-radius:8px">
+              <span style="font-size:1.3rem">🔷</span>
+              <div>
+                <div style="font-weight:700;font-size:.88rem">Render</div>
+                <div style="font-size:.78rem;color:#555">Gratis con límites · Ideal para demos y evaluaciones</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.8rem;padding:.6rem;background:#e3f2fd;border-radius:8px">
+              <span style="font-size:1.3rem">☁️</span>
+              <div>
+                <div style="font-weight:700;font-size:.88rem">Azure / AWS / GCP</div>
+                <div style="font-size:.78rem;color:#555">Infraestructura del banco · Máxima seguridad y control</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);color:#fff">
+            <h4 style="color:#e1bee7;margin-bottom:1rem">Ventajas del despliegue en nube</h4>
+            <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.87rem">
+              <div style="display:flex;align-items:center;gap:.6rem"><i class="fas fa-check" style="color:#ce93d8"></i> El cliente accede desde cualquier dispositivo</div>
+              <div style="display:flex;align-items:center;gap:.6rem"><i class="fas fa-check" style="color:#ce93d8"></i> No depende de una PC específica encendida</div>
+              <div style="display:flex;align-items:center;gap:.6rem"><i class="fas fa-check" style="color:#ce93d8"></i> Actualizaciones transparentes — sin reinstalar</div>
+              <div style="display:flex;align-items:center;gap:.6rem"><i class="fas fa-check" style="color:#ce93d8"></i> Múltiples usuarios simultáneos</div>
+              <div style="display:flex;align-items:center;gap:.6rem"><i class="fas fa-check" style="color:#ce93d8"></i> URL personalizada del cliente</div>
+            </div>
+          </div>
+
+          <div class="nota" style="margin-top:1rem">
+            <strong>Para el pitch:</strong> "Ningún empleado instala nada. Solo abren el navegador, van a <em>riesgo.tuinstitucion.com</em> y ya tienen el dashboard. Como un Netflix del análisis de cartera."
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla comparativa -->
+      <div style="margin-top:1.5rem;overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:.87rem">
+          <thead>
+            <tr style="background:#f0f4fa">
+              <th style="padding:.6rem .9rem;text-align:left;border-bottom:2px solid var(--border)">Criterio</th>
+              <th style="padding:.6rem .9rem;text-align:center;border-bottom:2px solid var(--border);color:var(--verde)">A — ZIP</th>
+              <th style="padding:.6rem .9rem;text-align:center;border-bottom:2px solid var(--border);color:var(--naranja)">B — Imagen Docker</th>
+              <th style="padding:.6rem .9rem;text-align:center;border-bottom:2px solid var(--border);color:#7b1fa2">C — Nube</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:.5rem .9rem;border-bottom:1px solid var(--border)">Requiere IT del cliente</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">Sí (básico)</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">Solo Docker</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">No</span></td></tr>
+            <tr style="background:#fafafa"><td style="padding:.5rem .9rem;border-bottom:1px solid var(--border)">Costo mensual</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">$0</span></td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">$0</span></td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">$5–50 USD</td></tr>
+            <tr><td style="padding:.5rem .9rem;border-bottom:1px solid var(--border)">Acceso remoto / móvil</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">No</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">No</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Sí</span></td></tr>
+            <tr style="background:#fafafa"><td style="padding:.5rem .9rem;border-bottom:1px solid var(--border)">Datos quedan en el cliente</td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Sí</span></td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Sí</span></td>
+              <td style="text-align:center;border-bottom:1px solid var(--border)">Configurable</td></tr>
+            <tr><td style="padding:.5rem .9rem">Tiempo de puesta en marcha</td>
+              <td style="text-align:center">15 min</td>
+              <td style="text-align:center">30 min</td>
+              <td style="text-align:center"><span class="badge badge-verde">2 min</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACTUALIZACIÓN DE DATOS ───────────────────────────────────────── -->
+<div style="background:var(--white)">
+<section id="datos-nuevos" style="background:transparent">
+  <div class="sec-header">
+    <h2>¿Cómo se actualiza con datos nuevos?</h2>
+    <div class="sec-line"></div>
+    <p>El sistema acepta datos reales del cliente desde el día uno — tres formas de conectarlo</p>
+  </div>
+
+  <!-- DIAGRAMA FLUJO DE ACTUALIZACIÓN -->
+  <div style="background:linear-gradient(135deg,#0D2347,#1A4A8A);border-radius:var(--radius);padding:2rem;margin-bottom:2.5rem;color:#fff">
+    <h3 style="color:#f4c55a;text-align:center;margin-bottom:1.5rem">Ciclo mensual de actualización</h3>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.5rem">
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;min-width:130px">
+        <i class="fas fa-server" style="font-size:1.6rem;color:#f4c55a;margin-bottom:.4rem;display:block"></i>
+        <div style="font-weight:700;font-size:.88rem">Core bancario</div>
+        <div style="font-size:.75rem;opacity:.6">Topaz / Olympic /<br>SQL Server</div>
+      </div>
+      <div style="font-size:1.3rem;opacity:.4"><i class="fas fa-arrow-right"></i></div>
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;min-width:130px">
+        <i class="fas fa-file-csv" style="font-size:1.6rem;color:#4fc3f7;margin-bottom:.4rem;display:block"></i>
+        <div style="font-weight:700;font-size:.88rem">Extracción</div>
+        <div style="font-size:.75rem;opacity:.6">CSV mensual o<br>conexión SQL</div>
+      </div>
+      <div style="font-size:1.3rem;opacity:.4"><i class="fas fa-arrow-right"></i></div>
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;min-width:130px">
+        <i class="fas fa-broom" style="font-size:1.6rem;color:#81c784;margin-bottom:.4rem;display:block"></i>
+        <div style="font-weight:700;font-size:.88rem">Limpieza</div>
+        <div style="font-size:.75rem;opacity:.6">Notebook 02<br>automático</div>
+      </div>
+      <div style="font-size:1.3rem;opacity:.4"><i class="fas fa-arrow-right"></i></div>
+      <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:1rem;text-align:center;min-width:130px">
+        <i class="fas fa-chart-bar" style="font-size:1.6rem;color:#f48fb1;margin-bottom:.4rem;display:block"></i>
+        <div style="font-weight:700;font-size:.88rem">Análisis</div>
+        <div style="font-size:.75rem;opacity:.6">NB 03-08<br>re-ejecutados</div>
+      </div>
+      <div style="font-size:1.3rem;opacity:.4"><i class="fas fa-arrow-right"></i></div>
+      <div style="background:rgba(200,131,26,.25);border:1px solid rgba(200,131,26,.5);border-radius:12px;padding:1rem;text-align:center;min-width:130px">
+        <i class="fas fa-tachometer-alt" style="font-size:1.6rem;color:#f4c55a;margin-bottom:.4rem;display:block"></i>
+        <div style="font-weight:700;font-size:.88rem">Dashboard</div>
+        <div style="font-size:.75rem;opacity:.8">Actualizado<br>automáticamente</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:1.2rem;font-size:.85rem;opacity:.6">
+      Todo el proceso toma menos de 10 minutos · Se puede automatizar con una tarea programada
+    </div>
+  </div>
+
+  <div class="grid-3">
+
+    <!-- FUENTE 1: CSV -->
+    <div class="caso-card">
+      <div class="caso-icon">📄</div>
+      <h4>Fuente 1 — CSV del core bancario</h4>
+      <p style="font-size:.87rem;color:#555;margin:.5rem 0">El core bancario genera un reporte de cartera en Excel o CSV. El cliente lo exporta una vez al mes y lo copia en la carpeta del sistema.</p>
+      <div style="background:#f8fafe;border-radius:8px;padding:.8rem;margin:.8rem 0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#333;line-height:1.7">
+        # Reemplazar el archivo<br>
+        data/raw/carteracsv.csv<br><br>
+        # Correr el pipeline<br>
+        python actualizar_cartera.py
+      </div>
+      <div class="caso-beneficios">
+        <span>Sin programación</span>
+        <span>Costo $0</span>
+        <span>Lo más común</span>
+      </div>
+    </div>
+
+    <!-- FUENTE 2: SQL -->
+    <div class="caso-card">
+      <div class="caso-icon">🗄️</div>
+      <h4>Fuente 2 — Base de datos SQL directa</h4>
+      <p style="font-size:.87rem;color:#555;margin:.5rem 0">El sistema se conecta directamente al SQL Server, PostgreSQL o MySQL del cliente. Descarga los datos frescos automáticamente sin intervención manual.</p>
+      <div style="background:#f8fafe;border-radius:8px;padding:.8rem;margin:.8rem 0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#333;line-height:1.7">
+        # Configurar en .env (una sola vez)<br>
+        DATABASE_URL=mssql://user:pass<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@servidor/cartera<br><br>
+        # Correr cada mes<br>
+        python data/extraccion/extraer_cartera.py
+      </div>
+      <div class="caso-beneficios">
+        <span>Totalmente automático</span>
+        <span>Sin exportar nada</span>
+        <span>Requiere DBA</span>
+      </div>
+    </div>
+
+    <!-- FUENTE 3: Programado -->
+    <div class="caso-card">
+      <div class="caso-icon">⏰</div>
+      <h4>Fuente 3 — Ejecución automática programada</h4>
+      <p style="font-size:.87rem;color:#555;margin:.5rem 0">Se configura una tarea que corre automáticamente el primer día hábil de cada mes. El cliente no hace nada — el dashboard se actualiza solo.</p>
+      <div style="background:#f8fafe;border-radius:8px;padding:.8rem;margin:.8rem 0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#333;line-height:1.7">
+        # Windows — Tareas programadas<br>
+        # Correr el 1ro de cada mes a las 6AM<br>
+        python actualizar_cartera.py<br><br>
+        # Linux — cron<br>
+        0 6 1 * * python actualizar_cartera.py
+      </div>
+      <div class="caso-beneficios">
+        <span>Manos libres</span>
+        <span>Sin intervención</span>
+        <span>Ideal producción</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUÁNDO RE-ENTRENAR -->
+  <div style="margin-top:2.5rem" class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num" style="background:var(--naranja)"><i class="fas fa-sync-alt"></i></div>
+      <div class="modulo-title">
+        <h3>¿Cuándo re-entrenar los modelos?</h3>
+        <span>Los modelos no se re-entrenan con cada actualización de datos — solo en estos casos</span>
+      </div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p>El pipeline de <strong>análisis</strong> (notebooks 02–03–08) corre con cada nuevo corte de datos. Los modelos de <strong>machine learning</strong> (notebooks 05–06) se re-entrenan solo cuando hay razón para hacerlo.</p>
+
+          <div style="margin-top:1rem;overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+              <thead>
+                <tr style="background:#fff3e0">
+                  <th style="padding:.5rem .7rem;text-align:left;border-bottom:2px solid #ffe0b2">Situación</th>
+                  <th style="padding:.5rem .7rem;text-align:center;border-bottom:2px solid #ffe0b2">Análisis (NB02-03)</th>
+                  <th style="padding:.5rem .7rem;text-align:center;border-bottom:2px solid #ffe0b2">Modelos ML (NB05-06)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding:.4rem .7rem;border-bottom:1px solid var(--border)">Nuevo corte mensual</td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Correr</span></td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)">No necesario</td></tr>
+                <tr style="background:#fafafa"><td style="padding:.4rem .7rem;border-bottom:1px solid var(--border)">6–12 meses de datos nuevos</td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Correr</span></td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-naranja">Re-entrenar</span></td></tr>
+                <tr><td style="padding:.4rem .7rem;border-bottom:1px solid var(--border)">Nueva política de crédito</td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Correr</span></td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-naranja">Re-entrenar</span></td></tr>
+                <tr style="background:#fafafa"><td style="padding:.4rem .7rem;border-bottom:1px solid var(--border)">AUC cae por debajo de 0.85</td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-verde">Correr</span></td>
+                  <td style="text-align:center;border-bottom:1px solid var(--border)"><span class="badge badge-rojo">Urgente</span></td></tr>
+                <tr><td style="padding:.4rem .7rem">Cambio de sistema bancario</td>
+                  <td style="text-align:center"><span class="badge badge-azul">Adaptar</span></td>
+                  <td style="text-align:center"><span class="badge badge-naranja">Re-entrenar</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="border-left:4px solid var(--naranja)">
+            <h4 style="margin-bottom:.8rem"><i class="fas fa-lightbulb" style="color:var(--accent)"></i> Qué pasa cuando llegan datos del cliente</h4>
+            <div style="display:flex;flex-direction:column;gap:.7rem">
+              <div style="padding:.6rem;border-radius:8px;background:#fff3e0">
+                <div style="font-weight:700;font-size:.85rem;color:var(--naranja)">Semana 1 — Mapeo de columnas</div>
+                <div style="font-size:.8rem;color:#555;margin-top:.2rem">Se comparan las columnas del cliente con el esquema del sistema. Tiempo: 2–4 horas con el DBA del cliente.</div>
+              </div>
+              <div style="padding:.6rem;border-radius:8px;background:#e8f5e9">
+                <div style="font-weight:700;font-size:.85rem;color:var(--verde)">Semana 1–2 — Primer análisis</div>
+                <div style="font-size:.8rem;color:#555;margin-top:.2rem">Correr notebooks 02–03. El cliente ve su primera distribución de mora real en el dashboard.</div>
+              </div>
+              <div style="padding:.6rem;border-radius:8px;background:#e3f2fd">
+                <div style="font-weight:700;font-size:.85rem;color:#1565c0">Semana 2–3 — Modelo calibrado</div>
+                <div style="font-size:.8rem;color:#555;margin-top:.2rem">Re-entrenar notebooks 05–06 con los datos propios del cliente. El modelo queda calibrado para su cartera específica.</div>
+              </div>
+              <div style="padding:.6rem;border-radius:8px;background:#f3e5f5">
+                <div style="font-weight:700;font-size:.85rem;color:#7b1fa2">Semana 3–4 — En producción</div>
+                <div style="font-size:.8rem;color:#555;margin-top:.2rem">API y dashboard corriendo con datos reales del cliente. Capacitación al equipo operativo.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comando único de actualización -->
+      <div style="margin-top:1.5rem;background:#1e2d40;border-radius:10px;padding:1.2rem 1.6rem">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:1.5px;color:#4fc3f7;text-transform:uppercase;margin-bottom:.8rem">Script de actualización mensual — actualizar_cartera.py</div>
+        <pre style="background:transparent;padding:0;font-size:.82rem;color:#e8f4ff">
+# 1. Extraer datos frescos del core bancario
+python data/extraccion/extraer_cartera.py
+
+# 2. Limpiar y preparar
+jupyter nbconvert --execute notebooks/02_limpieza_cartera.ipynb
+
+# 3. Análisis de morosidad
+jupyter nbconvert --execute notebooks/03_analisis_morosidad.ipynb
+
+# 4. Actualizar segmentación con nuevos datos
+jupyter nbconvert --execute notebooks/04_segmentacion_deudores.ipynb
+
+# 5. Análisis de cosechas
+jupyter nbconvert --execute notebooks/08_analisis_cosechas.ipynb
+
+# 6. Regenerar reporte ejecutivo HTML
+jupyter nbconvert --execute notebooks/07_reporte_ejecutivo.ipynb
+
+echo "Dashboard actualizado - abrir http://localhost:8501"</pre>
+      </div>
+      <div class="nota" style="margin-top:.8rem">
+        <strong>Para el pitch:</strong> "Una vez configurado, actualizar el sistema el primer día de cada mes toma exactamente lo que tarda en correr ese script — unos 8 minutos. Sin intervención manual, sin exportar nada, sin llamar a un técnico."
+      </div>
+    </div>
+  </div>
+
+  <!-- COLUMNAS DEL CLIENTE -->
+  <div style="margin-top:1.5rem" class="modulo">
+    <div class="modulo-header">
+      <div class="modulo-num"><i class="fas fa-table"></i></div>
+      <div class="modulo-title">
+        <h3>¿Qué pasa si el cliente tiene columnas con nombres distintos?</h3>
+        <span>El mapeo de columnas — paso 1 con cualquier cliente nuevo</span>
+      </div>
+    </div>
+    <div class="modulo-body">
+      <div class="grid-2">
+        <div>
+          <p>Es normal que cada institución llame "DIAS_MORA" a lo que en el sistema es "ddm", o "FECHA_APERTURA" a lo que acá es "fec_operacion". La solución es un <strong>mapeo de columnas</strong> — una tabla de correspondencias que se configura una sola vez.</p>
+          <div style="background:#f8fafe;border-radius:10px;padding:1rem 1.2rem;margin-top:.8rem">
+            <div style="font-size:.75rem;font-weight:700;letter-spacing:1px;color:var(--gris);text-transform:uppercase;margin-bottom:.6rem">Ejemplo de mapeo en extraer_cartera.py</div>
+            <pre style="background:#1e2d40;font-size:.8rem">
+MAPA_COLUMNAS = {
+    "DIAS_MORA":       "ddm",
+    "FECHA_APERTURA":  "fec_operacion",
+    "SALDO_CAPITAL":   "saldo_capital_cuota",
+    "TASA_INTERES":    "tivbcp",
+    "COD_AGENCIA":     "cod_su",
+    "CATEGORIA_BCP":   "riesgo",
+}</pre>
+          </div>
+        </div>
+        <div>
+          <p><strong>Columnas mínimas que debe tener la fuente:</strong></p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <span class="out-chip"><i class="fas fa-key"></i> nro_operacion</span>
+            <span class="out-chip"><i class="fas fa-calendar"></i> fec_operacion</span>
+            <span class="out-chip"><i class="fas fa-dollar-sign"></i> monto_original</span>
+            <span class="out-chip"><i class="fas fa-clock"></i> plan</span>
+            <span class="out-chip"><i class="fas fa-credit-card"></i> valor_cuota</span>
+            <span class="out-chip"><i class="fas fa-percent"></i> tivbcp</span>
+            <span class="out-chip"><i class="fas fa-exclamation"></i> ddm</span>
+            <span class="out-chip"><i class="fas fa-wallet"></i> saldo_capital_cuota</span>
+            <span class="out-chip"><i class="fas fa-user"></i> ingreso_mensual</span>
+            <span class="out-chip"><i class="fas fa-tag"></i> riesgo</span>
+            <span class="out-chip"><i class="fas fa-star"></i> califi</span>
+            <span class="out-chip"><i class="fas fa-building"></i> cod_su</span>
+          </div>
+          <div class="nota" style="margin-top:.8rem">
+            <strong>Tiempo típico de adaptación:</strong> 2 a 4 horas trabajando con el DBA del cliente para identificar las columnas equivalentes en su sistema.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+</div>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
+<footer>
+  <div style="font-size:1rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.4rem">Sistema Analítico de Cartera de Créditos</div>
+  <div>Desarrollado con Python · scikit-learn · FastAPI · Streamlit</div>
+  <div style="margin-top:.4rem;color:rgba(255,255,255,.3)">Datos reales · Corte 30.04.2018 · 124.781 préstamos</div>
+</footer>
+
+<script>
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.boxShadow =
+    window.scrollY > 50 ? '0 2px 20px rgba(0,0,0,.12)' : 'none';
+});
+
+// Animación de barras de features al hacer scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.feat-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        bar.style.transition = 'width 1s ease';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.modulo').forEach(m => observer.observe(m));
+</script>
+</body>
+</html>
